@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+
+    <link href="https://fonts.googleapis.com/css2?family=Yanone+Kaffeesatz&display=swap" rel="stylesheet">
+
+    <!-- fontawesome link -->
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/all.min.css' ) }}">
+
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/bootstrap.min.css' ) }}">
+
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/main.css' ) }}">
+
+    <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.7.9/angular.min.js"></script>
+
+    <title>{{ data.title }}</title>
+</head>
+
+<body ng-app="AIworks" ng-controller="AppController">
+
+
+        {% include "includes/header.html" %}
+
+        {% block body %} {% endblock %}
+
+
+    <script src="{{ url_for('static', filename='js/app.js' ) }}"></script>
+    <script src="{{ url_for('static', filename='js/controllers/FormController.js' ) }}"></script>
+    <script src="{{ url_for('static', filename='js/services/formService.js' ) }}"></script>
+
+    <script src="{{ url_for('static', filename='js/external_js/jquery.js' ) }}"></script>
+    <script src="{{ url_for('static', filename='js/external_js/bootstrap.min.js' ) }}"></script>
+        
+</body>
+
+</html>

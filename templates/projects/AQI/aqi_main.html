@@ -1,0 +1,78 @@
+{% extends '/base.html' %}
+
+{% block body %}
+
+<div class="block-body"  ng-controller="FormController as form">
+
+    <section>
+        <div class="container-fluid">
+            <div class="row my-5">
+                <div class="offset-md-2 col-md-8 col-sm-12">
+                    <div class="card" ng-init="step='one'; model_present='{{ data.model_present }}'" ng-cloak>
+
+                        <!-- Form header -->
+                        <div class="card-header bg-white text-danger">
+                            <b>Air Quality Index</b>
+
+                            <button type="button" class="btn btn-sm btn-outline-success float-right"
+                                ng-if="model_present == 'False'">
+                                Build Model
+                            </button>
+
+                            <button type="button" class="btn btn-sm btn-outline-success float-right mx-2"
+                                ng-if="model_present == 'True'" >
+                                Predict
+                            </button>
+
+                            <button type="button" ng-disabled="form.formservice.processing" class="btn btn-sm btn-outline-danger float-right mx-2"
+                                ng-if="model_present == 'True'" ng-click="form.formservice.clear_integrated_model('/clear_integrated_model', 'aqi')">
+                                <span ng-if="!form.formservice.processing">Remove Build Model</span>
+                                <span ng-if="form.formservice.processing">Removing..<i class="fas fa-spinner fa-spin"></i></span>
+                            </button>
+                        </div>
+
+                        <!-- Include form body for Normal inputs -->
+                        <div class="card-body" ng-if="step == 'one'">
+                            {% include "/projects/AQI/includes/formbody.html" %}
+                        </div>
+
+                        <!-- Include form body for Hyper-Parameteric inputs -->
+                        <div class="card-body" ng-if="step == 'two'">
+                            {% include "/projects/AQI/includes/algorithms_hyper_inputs.html" %}
+                        </div>
+
+                        <!-- Next, Back & submit button -->
+                        <span class="form-buttons m-4" ng-if="model_present == 'False'">
+                            <button type="button" class="btn btn-sm btn-outline-dark float-right px-5"
+                                ng-class="{'d-none': step == 'two' }"
+                                ng-click="step='two'; form.formservice.selected_algo()">
+                                Next
+                            </button>
+
+                            <button type="button" class="btn btn-sm btn-outline-dark px-5"
+                                ng-class="{'d-none': step == 'one'}" ng-click="step='one'; form.formservice.reset_algos();">
+                                Back
+                            </button>
+
+                            <button type="submit" class="btn btn-sm btn-outline-success float-right px-5"
+                                ng-class="{'d-none': step == 'one'}"
+                                ng-click="form.buildModel('/aqi', 'aqi')">
+                                Submit
+                            </button>
+                        </span>
+
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </section>
+
+    <!-- Include result popup when form submitted -->
+    <section id="result_section" class="d-none w-100">
+        {% include "/projects/AQI/includes/result_popup.html" %}
+    </section>
+
+</div>
+
+{% endblock %}
