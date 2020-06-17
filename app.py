@@ -4,12 +4,14 @@
 from flask import Flask, render_template, url_for, request, jsonify, abort
 import json, pymongo, joblib, numpy
 from algorithms.process import process
+from models.routes import model_app
+
 
 app = Flask(__name__)
 
-from models import routes
+app.register_blueprint(model_app)
 
-@app.route('/')
+@app.route('/', methods=['GET'])
 def dashboard():
 
     data = {}
