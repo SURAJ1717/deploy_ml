@@ -1,11 +1,11 @@
-from flask import request, abort
-from __main__ import app
+from flask import request, abort, Blueprint
 from models.models import Model
 
 from sklearn.linear_model import LinearRegression
 
+model_app = Blueprint('model_app', __name__)
 
-@app.route('/model_integrate', methods=['POST'])
+@model_app.route('/model_integrate', methods=['POST'])
 def integrate():
 
     formData = request.form
@@ -23,7 +23,7 @@ def integrate():
     return 'Model saved successfully', 200
 
 
-@app.route('/clear_integrated_model', methods=['POST'])
+@model_app.route('/clear_integrated_model', methods=['POST'])
 def remove_integrated():
 
     formData = request.form
