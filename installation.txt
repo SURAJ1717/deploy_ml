@@ -5,7 +5,8 @@ $ sudo apt-get install apache2
 $ sudo apt-get install libapache2-mod-wsgi
 
 $ sudo apt-get install python-pip
-$ sudo pip install flask virtualenv
+$ sudo pip install flask virtualenv astroid gunicorn kiwisolver matplotlib numpy pandas pylint scikit-learn scipy seaborn
+$ sudo pip3 install typed-ast xgboost
 
 cd /var/www/
 $ git clone https//gitlink paste
