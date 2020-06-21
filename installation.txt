@@ -1,0 +1,44 @@
+After login to AWS EC2
+
+$ sudo apt-get update
+$ sudo apt-get install apache2
+$ sudo apt-get install libapache2-mod-wsgi
+
+$ sudo apt-get install python-pip
+$ sudo pip install flask virtualenv
+
+cd /var/www/
+$ git clone https//gitlink paste
+
+cd /var/www/deploy_ml
+$ virtualenv venv
+$ source venv/bin/activate
+$ sudo pip install -r requirments.txt
+$ python app.py
+
+// Apache2 configuration
+cd /etc/apache2/sites-available
+$ sudo nano flaskapp.conf
+    
+    <VirtualHost *:80>
+        ServerAdmin webmaster@localhost
+        DocumentRoot /var/www/
+
+        WSGIDaemonProcess flaskapp threads=5
+        WSGIScriptAlias / /var/www/deploy_ml/flaskapp.wsgi
+
+        <Directory deploy_ml>
+            WSGIProcessGroup flaskapp
+            WSGIApplicationGroup %{GLOBAL}
+            Order deny,allow
+            Allow from all
+        </Directory>
+
+        ErrorLog ${APACHE_LOG_DIR}/error.log
+        CustomLog ${APACHE_LOG_DIR}/access.log combined
+    </VirtualHost>
+
+$ a2ensites flaskapp.conf
+$ sudo service apache2 restart
+
+
