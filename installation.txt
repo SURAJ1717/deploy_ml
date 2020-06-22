@@ -7,7 +7,7 @@ cd /var/www/
 $ sudo git clone https://github.com/SURAJ1717/deploy_ml.git
 
 cd /var/www/deploy_ml
-$ sudo pip install virtualenv
+$ sudo pip install virtualenv flask joblib matplotlib numpy pandas pymongo scikit seaborn
 $ sudo virtualenv venv
 $ source venv/bin/activate
 
