@@ -7,7 +7,7 @@ cd /var/www/
 $ sudo git clone https://github.com/SURAJ1717/deploy_ml.git
 
 cd /var/www/deploy_ml
-$ sudo pip install virtualenv flask joblib matplotlib numpy pandas pymongo scikit seaborn
+$ sudo pip install virtualenv flask joblib matplotlib numpy pandas pymongo seaborn
 $ sudo virtualenv venv
 $ source venv/bin/activate
 
@@ -39,4 +39,4 @@ $ sudo nano flaskapp.conf
 $ sudo a2ensites flaskapp.conf
 $ sudo service apache2 restart
 
-
+$ sudo tail -5 /var/log/apache2/error.log
