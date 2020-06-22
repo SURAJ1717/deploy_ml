@@ -1,21 +1,18 @@
 After login to AWS EC2
 
 $ sudo apt-get update
-$ sudo apt-get install apache2 libapache2-mod-wsgi python-pip
+$ sudo apt-get install apache2 libapache2-mod-wsgi python3-pip
 
 cd /var/www/
-$ git clone https://github.com/SURAJ1717/deploy_ml.git
+$ sudo git clone https://github.com/SURAJ1717/deploy_ml.git
 
 cd /var/www/deploy_ml
 $ sudo pip install flask virtualenv
 $ sudo virtualenv venv
 $ source venv/bin/activate
 
-$ sudo pip install -r requirments.txt
-$ sudo pip install astroid gunicorn kiwisolver matplotlib numpy pandas pylint scikit-learn scipy seaborn
-$ sudo pip3 install typed-ast xgboost
-
-$ python app.py
+$ sudo pip3 install -r requirements.txt
+$ python3 app.py
 
 // Apache2 configuration
 cd /etc/apache2/sites-available
