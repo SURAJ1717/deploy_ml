@@ -8,7 +8,7 @@ $ git clone https://github.com/SURAJ1717/deploy_ml.git
 
 cd /var/www/deploy_ml
 $ sudo pip install flask virtualenv
-$ virtualenv venv
+$ sudo virtualenv venv
 $ source venv/bin/activate
 
 $ sudo pip install -r requirments.txt
