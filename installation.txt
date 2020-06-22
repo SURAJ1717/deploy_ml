@@ -1,13 +1,13 @@
 After login to AWS EC2
 
 $ sudo apt-get update
-$ sudo apt-get install apache2 libapache2-mod-wsgi python3-pip
+$ sudo apt-get install apache2 libapache2-mod-wsgi python3-pip python-pip
 
 cd /var/www/
 $ sudo git clone https://github.com/SURAJ1717/deploy_ml.git
 
 cd /var/www/deploy_ml
-$ sudo pip install flask virtualenv
+$ sudo pip install virtualenv flask joblib matplotlib numpy pandas pymongo scikit seaborn
 $ sudo virtualenv venv
 $ source venv/bin/activate
 
@@ -36,7 +36,7 @@ $ sudo nano flaskapp.conf
         CustomLog ${APACHE_LOG_DIR}/access.log combined
     </VirtualHost>
 
-$ a2ensites flaskapp.conf
+$ sudo a2ensites flaskapp.conf
 $ sudo service apache2 restart
 
 
