@@ -1,16 +1,14 @@
 After login to AWS EC2
 
 $ sudo apt-get update
-$ sudo apt-get install apache2 libapache2-mod-wsgi python3-pip python-pip
+$ sudo apt-get install python3-pip apache2 libapache2-mod-wsgi-py3
 
 cd /var/www/
 $ sudo git clone https://github.com/SURAJ1717/deploy_ml.git
 
 cd /var/www/deploy_ml
-$ sudo pip install virtualenv flask joblib matplotlib numpy pandas pymongo seaborn
 $ sudo virtualenv venv
 $ source venv/bin/activate
-
 $ sudo pip3 install -r requirements.txt
 $ python3 app.py
 
@@ -18,23 +16,21 @@ $ python3 app.py
 cd /etc/apache2/sites-available
 $ sudo nano flaskapp.conf
     
-    <VirtualHost *:80>
-        ServerAdmin webmaster@localhost
+<VirtualHost *:80>
+        ServerName webmaster@localhost
         DocumentRoot /var/www/
 
-        WSGIDaemonProcess flaskapp threads=5
+        WSGIDaemonProcess flaskapp threads=5 home=/var/www/deploy_ml/
         WSGIScriptAlias / /var/www/deploy_ml/flaskapp.wsgi
 
-        <Directory deploy_ml>
-            WSGIProcessGroup flaskapp
-            WSGIApplicationGroup %{GLOBAL}
-            Order deny,allow
-            Allow from all
-        </Directory>
-
-        ErrorLog ${APACHE_LOG_DIR}/error.log
-        CustomLog ${APACHE_LOG_DIR}/access.log combined
-    </VirtualHost>
+        <directory /var/www/deploy_ml>
+                WSGIProcessGroup flaskapp
+                WSGIApplicationGroup %{GLOBAL}
+                WSGIScriptReloading On
+                Order deny,allow
+                Allow from all
+        </directory>
+</VirtualHost>
 
 $ sudo a2ensites flaskapp.conf
 $ sudo service apache2 restart
