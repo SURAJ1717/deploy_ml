@@ -1,10 +1,14 @@
-import pymongo, uuid, json
+import pymongo, uuid, json, os, dotenv 
 from flask import abort, url_for, redirect, jsonify
+
+## retrieve env var
+dotenv.load_dotenv()
+MONGODB_LINK = os.getenv('MONGODB_LINK', None)
+assert MONGODB_LINK
 
 class Model:
 
-    link = 'mongodb://127.0.0.1:27017'
-    client = pymongo.MongoClient(link)
+    client = pymongo.MongoClient(MONGODB_LINK)
     db = client['Models']
     table = db.BuildAlgorithmTable
 

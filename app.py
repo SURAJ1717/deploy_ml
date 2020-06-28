@@ -2,13 +2,17 @@
 # source env/Scripts/activate
 
 from flask import Flask, render_template, url_for, request, jsonify, abort
-import json, pymongo, joblib, numpy
+import json, pymongo, joblib, numpy, os, dotenv
 from algorithms.process import process
-from models.routes import model_app
 
+## retrieve env var
+dotenv.load_dotenv()
+MONGODB_LINK = os.getenv('MONGODB_LINK', None)
+assert MONGODB_LINK
 
 app = Flask(__name__)
 
+from models.routes import model_app
 app.register_blueprint(model_app)
 
 @app.route('/', methods=['GET'])
@@ -27,8 +31,6 @@ def aqi():
     data = {}
     data['title'] = 'AQI'
     data['header_tag'] = 'AQI Project'
-
-    link = 'mongodb://127.0.0.1:27017'
 
     if request.method == 'POST':
 
@@ -55,7 +57,7 @@ def aqi():
         data['model_present'] = True
         data['build_model'] = {}
 
-        client = pymongo.MongoClient(link)
+        client = pymongo.MongoClient(MONGODB_LINK)
         db = client['Models']
         table = db.BuildAlgorithmTable
 
@@ -73,9 +75,8 @@ def aqi():
 def aqi_predict():
 
     formData = request.form
-    link = 'mongodb://127.0.0.1:27017'
 
-    client = pymongo.MongoClient(link)
+    client = pymongo.MongoClient(MONGODB_LINK)
     db = client['Models']
     table = db.BuildAlgorithmTable
 

@@ -1,2 +1,3 @@
 /venv
 /algorithms/all_fitted_models/
+.env

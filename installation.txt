@@ -38,8 +38,8 @@ $ sudo service apache2 restart
 
 $ sudo tail -5 /var/log/apache2/error.log
 
-
-
+Note:- static\js\services\formService.js ==>> fs.base_url = 'http://'+ window.location.hostname +':5000';
+(change 5000 => 80)
 
 ==============================================================================================
 ==============================================================================================
@@ -55,9 +55,10 @@ $ sudo apt-get update
 
 $ sudo apt-get install -y mongodb-org
 
-cd /etc/
-sudo nano mongod.conf
-change bindIP 0.0.0.0
+$ sudo nano /etc/mongod.conf
+comment bindIP 0.0.0.0
+
+$ sudo rm /var/lib/mongodb/mongod.lock
 
 $ sudo systemctl daemon-reload
 $ sudo systemctl start mongod
