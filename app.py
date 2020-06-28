@@ -28,6 +28,8 @@ def aqi():
     data['title'] = 'AQI'
     data['header_tag'] = 'AQI Project'
 
+    link = 'mongodb://127.0.0.1:27017'
+
     if request.method == 'POST':
 
         model = request.headers['algorithm']
@@ -53,7 +55,7 @@ def aqi():
         data['model_present'] = True
         data['build_model'] = {}
 
-        client = pymongo.MongoClient('mongodb://127.0.0.1:27017')
+        client = pymongo.MongoClient(link)
         db = client['Models']
         table = db.BuildAlgorithmTable
 
@@ -71,8 +73,9 @@ def aqi():
 def aqi_predict():
 
     formData = request.form
+    link = 'mongodb://127.0.0.1:27017'
 
-    client = pymongo.MongoClient('mongodb://127.0.0.1:27017')
+    client = pymongo.MongoClient(link)
     db = client['Models']
     table = db.BuildAlgorithmTable
 
