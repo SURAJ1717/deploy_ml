@@ -3,7 +3,8 @@ from flask import abort, url_for, redirect, jsonify
 
 class Model:
 
-    client = pymongo.MongoClient('mongodb://127.0.0.1:27017')
+    link = 'mongodb://127.0.0.1:27017'
+    client = pymongo.MongoClient(link)
     db = client['Models']
     table = db.BuildAlgorithmTable
 
