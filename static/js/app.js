@@ -45,8 +45,6 @@ app.controller('AppController', ['$scope', '$http', 'ngDialog', function ($scope
   
         var template = $scope.base_url + API;
 
-        console.log(template);
-
         ngDialog.open({
 
             template: template,
