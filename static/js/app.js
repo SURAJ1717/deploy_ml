@@ -1,11 +1,11 @@
-var app = angular.module('AIworks', []);
+var app = angular.module('AIworks', ['ngDialog']);
 
 app.config(function ($interpolateProvider) {
   $interpolateProvider.startSymbol('[[');
   $interpolateProvider.endSymbol(']]');
 });
 
-app.controller('AppController', ['$scope', '$http', '$q', function ($scope, $http, $q) {
+app.controller('AppController', ['$scope', '$http', 'ngDialog', function ($scope, $http, ngDialog) {
 
     $scope.base_url = 'http://'+ window.location.hostname +':5000';
 
@@ -36,8 +36,23 @@ app.controller('AppController', ['$scope', '$http', '$q', function ($scope, $htt
             return JSON.parse(request.response);
         }else{
 
-            return {};
+            return {'error': true};
         }
+
+    }
+
+    $scope.openPopup = function(API, Data){
+  
+        var template = $scope.base_url + API;
+
+        console.log(template);
+
+        ngDialog.open({
+
+            template: template,
+            className: 'ngdialog-theme-default',
+            scope: $scope,
+        });
 
     }
 

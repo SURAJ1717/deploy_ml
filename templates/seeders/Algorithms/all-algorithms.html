@@ -6,7 +6,10 @@
     <div class="container-fluid" ng-init="algorithms=fetchAPIData('/api_seed/algorithms/all')">
         <div class="row mt-5">
             <div class="col-10 offset-1 text-right mb-2">
-                <button class="btn btn-sm btn-outline-primary"><i class="fas fa-plus"></i> Add Algorithms</button>
+                <button class="btn btn-sm btn-outline-primary" 
+                    ng-click="openPopup('/seeders/Algorithms/popup/add-algorithm.html', 'Data')">
+                    <i class="fas fa-plus"></i> Add Algorithms
+                </button>
             </div>
 
             <div class="col-10 offset-1">

@@ -10,24 +10,23 @@
 
     <!-- fontawesome link -->
     <link rel="stylesheet" href="{{ url_for('static', filename='css/all.min.css' ) }}">
-
     <link rel="stylesheet" href="{{ url_for('static', filename='css/bootstrap.min.css' ) }}">
-
     <link rel="stylesheet" href="{{ url_for('static', filename='css/main.css' ) }}">
 
-    <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.7.9/angular.min.js"></script>
-
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/ng-dialog/1.0.1/css/ngDialog.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/ng-dialog/1.0.1/css/ngDialog-theme-default.min.css">
+    
     <title>{{ data.title }}</title>
 </head>
 
 <body ng-app="AIworks" ng-controller="AppController">
 
+    {% include "includes/header.html" %}
 
-        {% include "includes/header.html" %}
+    {% block body %} {% endblock %}
 
-        {% block body %} {% endblock %}
-
-
+    <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.7.9/angular.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/ng-dialog/1.0.1/js/ngDialog.min.js"></script>
     <script src="{{ url_for('static', filename='js/app.js' ) }}"></script>
     <script src="{{ url_for('static', filename='js/controllers/FormController.js' ) }}"></script>
     <script src="{{ url_for('static', filename='js/services/formService.js' ) }}"></script>
@@ -35,6 +34,7 @@
     <script src="{{ url_for('static', filename='js/external_js/jquery.js' ) }}"></script>
     <script src="{{ url_for('static', filename='js/external_js/bootstrap.min.js' ) }}"></script>
         
+
 </body>
 
 </html>
