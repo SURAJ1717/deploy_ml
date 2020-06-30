@@ -5,13 +5,40 @@ app.config(function ($interpolateProvider) {
   $interpolateProvider.endSymbol(']]');
 });
 
-app.controller('AppController', ['$scope', function ($scope) {
+app.controller('AppController', ['$scope', '$http', '$q', function ($scope, $http, $q) {
+
+    $scope.base_url = 'http://'+ window.location.hostname +':5000';
 
     $scope.round_int = function(int, len){
 
         var value = int.toFixed(len);
 
         return value;
+    }
+
+    $scope.fetchAPIData = function(API, Data){
+  
+        var url = $scope.base_url + API;
+        
+        var requestData = new FormData();
+
+        angular.forEach(Data, function (value, key) {
+                        
+            requestData.append(key, value);
+        });
+
+        var request = new XMLHttpRequest();
+        request.open('POST', url, false);  // `false` makes the request synchronous
+        request.send(requestData);
+        
+        if (request.status === 200) {
+
+            return JSON.parse(request.response);
+        }else{
+
+            return {};
+        }
+
     }
 
 }]);

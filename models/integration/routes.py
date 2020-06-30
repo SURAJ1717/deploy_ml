@@ -1,8 +1,6 @@
 from flask import request, abort, Blueprint
-from models.models import Model
 
-from sklearn.linear_model import LinearRegression
-
+from models.integration.models import Model
 model_app = Blueprint('model_app', __name__)
 
 @model_app.route('/model_integrate', methods=['POST'])
