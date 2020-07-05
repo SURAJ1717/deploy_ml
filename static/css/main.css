@@ -64,3 +64,11 @@ a:hover {
 .c-mh{
     min-height: 580px !important;
 }
+
+.single-param{
+
+    border: 1px solid #007bff;
+    border-radius: 4px;
+    padding: 0px 5px;
+    color: #007bff;
+}

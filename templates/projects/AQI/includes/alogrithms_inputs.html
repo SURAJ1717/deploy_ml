@@ -1,0 +1,114 @@
+<!-- Normal input for building model form -->
+<div class="row">
+    <div class="form-group col-12 mb-5">
+        <small><b>Please Upload CSV</b></small>
+        <input class="form-control" type="file" id="file1" name="file" multiple
+            ng-files="form.formservice.getTheFiles($files)">
+        <small class="form-text text-danger">NOTE: Csv contain last must be dependent
+            feature and all column should be of float type</small>
+    </div>
+
+    <div class="form-group col-12 mb-5">
+        <small><b>Select Algorithms </b><span class="text-warning px-2">Default
+                all</span></small>
+        <br>
+        <div class="row">
+            <div class="col-4 mt-2">
+                <input type="checkbox" class="mx-2"
+                    ng-model="form.formservice.formData.algorithms.linear_regressor"><small>Linear
+                    Regression</small><br>
+            </div>
+            <div class="col-4 mt-2">
+                <input type="checkbox" class="mx-2"
+                    ng-model="form.formservice.formData.algorithms.ridge_regressor"><small>Ridge
+                    Regression</small><br>
+            </div>
+            <div class="col-4 mt-2">
+                <input type="checkbox" class="mx-2"
+                    ng-model="form.formservice.formData.algorithms.lasso_regressor"><small>Lasso
+                    Regression</small><br>
+            </div>
+            <div class="col-4 mt-2">
+                <input type="checkbox" class="mx-2"
+                    ng-model="form.formservice.formData.algorithms.dt_regressor"><small>Decision Tree
+                    Regression</small><br>
+            </div>
+            <div class="col-4 mt-2">
+                <input type="checkbox" class="mx-2"
+                    ng-model="form.formservice.formData.algorithms.rf_regressor"><small>Random Forest
+                    Regression</small><br>
+            </div>
+            <div class="col-4 mt-2">
+                <input type="checkbox" class="mx-2"
+                    ng-model="form.formservice.formData.algorithms.xgb_regressor"><small>Xg-boost
+                    Regression</small><br>
+            </div>
+        </div>
+    </div>
+
+    <div class="form-group col-6 mb-5">
+        <small><b>Cross validation </b></small>
+        <input type="number" class="form-control" id="cv" placeholder="default 10"
+            ng-model="form.formservice.formData.cv">
+    </div>
+
+    <div class="form-group col-6 mb-5">
+        <small><b>Scoring</b></small>
+        <input type="text" class="form-control" id="scoring" placeholder="default 'neg_mean_squared_error'"
+            ng-model="form.formservice.formData.scoring">
+    </div>
+
+    <div class="form-group col-4 mb-5">
+        <small><b>Is Time series</b></small>
+        <div class="input-group">
+            <div class="input-group-prepend">
+                <div class="input-group-text">
+                    <input type="checkbox" id="skip_first" ng-model="form.formservice.formData.skip_first">
+                </div>
+            </div>
+            <input type="text" class="form-control bg-white" value="Skip first Row(for Date)" disabled>
+        </div>
+    </div>
+
+    <div class="form-group col-4 mb-5">
+        <small><b>Correlation</b></small>
+        <div class="input-group">
+            <div class="input-group-prepend">
+                <div class="input-group-text">
+                    <input type="checkbox" id="correlation" ng-model="form.formservice.formData.correlation">
+                </div>
+            </div>
+            <input type="text" class="form-control bg-white" value="Remove less correlated features" disabled>
+        </div>
+    </div>
+
+    <div class="form-group col-4 mb-5">
+        <small><b>Top Important features</b></small>
+        <input type="number" class="form-control" id="top_imp_features" placeholder="default All"
+            ng-model="form.formservice.formData.top_imp_features">
+    </div>
+
+    <div class="form-group col-12 mb-5">
+        <small><b>Search Method</b></small>
+        <select id="search_type" placeholder="select" class="form-control" name="search_type"
+            ng-model="form.formservice.formData.search_type">
+            <option value="">Select (Default-Grid)</option>
+            <option value="grid">Grid-Search CV</option>
+            <option value="rand">Randomized-Search CV</option>
+        </select>
+    </div>
+
+    <div class="form-group col-6 mb-5" ng-if="form.formservice.formData.search_type == 'rand'">
+        <small><b>RSCV iterations</b></small>
+        <input type="number" class="form-control" id="n_iter" placeholder="default 100"
+            ng-model="form.formservice.formData.n_iter">
+    </div>
+
+    <div class="form-group col-6 mb-5" ng-if="form.formservice.formData.search_type == 'rand'">
+        <small><b>RSCV Randon State</b></small>
+        <input type="number" class="form-control" id="random_state" placeholder="default None"
+            ng-model="form.formservice.formData.random_state">
+    </div>
+
+</div>
+

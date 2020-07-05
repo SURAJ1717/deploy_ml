@@ -6,7 +6,7 @@
     <div class="container-fluid" ng-init="algorithms=fetchAPIData('/api_seed/algorithms/all')">
         <div class="row mt-5">
             <div class="col-10 offset-1 text-right mb-2">
-                <button class="btn btn-sm btn-outline-primary" 
+                <button class="btn btn-sm btn-outline-primary"
                     ng-click="openPopup('/seeders/Algorithms/popup/add-algorithm.html', 'Data')">
                     <i class="fas fa-plus"></i> Add Algorithms
                 </button>
@@ -24,15 +24,26 @@
                     </thead>
 
                     <tbody>
-                        
-                        <tr ng-repeat="item in algorithms">
+
+                        <tr ng-repeat="item in algorithms.algorithms" ng-if="item.type">
                             <td>[[item.name]]</td>
                             <td>[[item.slug]]</td>
                             <td>[[item.type]]</td>
                             <td>
-                                <button class="btn btn-sm btn-outline-info"><i class="fas fa-eye"></i></button>
-                                <button class="btn btn-sm btn-outline-primary mx-3"><i class="fas fa-pencil-alt"></i></button>
-                                <button class="btn btn-sm btn-outline-danger"><i class="fas fa-trash"></i></button>
+                                <a href="/api_seed/algorithm/[[item._id]]/hyper-params" class="btn btn-sm btn-outline-info">
+                                    <i class="fas fa-eye"></i>
+                                </a>
+
+                                <button class="btn btn-sm btn-outline-primary mx-3"
+                                    ng-click="openPopup('/seeders/Algorithms/popup/edit-algorithm.html', item)">
+                                    <i class="fas fa-pencil-alt"></i>
+                                </button>
+
+                                <button ng-disabled="processing" class="btn btn-sm btn-outline-danger"
+                                    ng-click="postForm('/api_seed/delete_algorithms', item)">
+                                    <i ng-if="!processing" class="fas fa-trash"></i>
+                                    <i ng-if="processing" class="fas fa-spinner fa-spin"></i>
+                                </button>
                             </td>
                         </tr>
 

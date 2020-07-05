@@ -1,10 +1,10 @@
 <div ng-controller="AppController" class="mt-4">
-    <div class="card" ng-init="formData={}">
+    <div class="card" ng-init="formData=popupData">
         <div class="card-header text-center bg-white">
-            Add Algorithms
+            Update Algorithms 
         </div>
         <div class="card-body">
-            <form ng-submit="postForm('/api_seed/add_algorithms', formData)">
+            <form ng-submit="postForm('/api_seed/update_algorithms', formData)">
                 <div class="row">
                     <div class="col-12">
                         <div class="form-group">
@@ -12,14 +12,12 @@
                             <input type="text" class="form-control" id="algorithm_name" ng-model="formData.name">
                         </div>
                     </div>
-                    
                     <div class="col-12">
                         <div class="form-group">
                             <label class="h6" for="algorithm_slug">Algorithms Slug</label>
                             <input type="text" class="form-control" id="algorithm_slug" ng-model="formData.slug">
                         </div>
                     </div>
-
                     <div class="col-12">
                         <div class="" ng-init="types=['regressor','classifier']">
                             <label class="h6" for="algorithm_type">Algorithms Type</label>
@@ -39,10 +37,9 @@
                     
                     <div class="col-12 mt-4 text-center">
                         <button ng-disabled="processing" class="btn btn-sm btn-outline-primary">
-                            <span ng-if="!processing"> Add </span>
+                            <span ng-if="!processing"> Update </span>
                             <span ng-if="processing">Please Wait.. <i class="fas fa-spinner fa-spin"></i></span>
                         </button>
-                        <button ng-click="closeThisDialog()" class="btn btn-sm btn-outline-danger">Cancel</button>
                     </div>
                 </div>
             </form>
