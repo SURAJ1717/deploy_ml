@@ -1,4 +1,4 @@
-var app = angular.module('AIworks', ['ngDialog']);
+var app = angular.module('AIworks', ['ngDialog', 'ngSanitize', 'ui.select']);
 
 app.config(function ($interpolateProvider) {
   $interpolateProvider.startSymbol('[[');
@@ -8,6 +8,8 @@ app.config(function ($interpolateProvider) {
 app.controller('AppController', ['$scope', '$http', 'ngDialog', function ($scope, $http, ngDialog) {
 
     $scope.base_url = 'http://'+ window.location.hostname +':5000';
+    $scope.processing = false;
+    var aap_con = this;
 
     $scope.round_int = function(int, len){
 
@@ -45,13 +47,66 @@ app.controller('AppController', ['$scope', '$http', 'ngDialog', function ($scope
   
         var template = $scope.base_url + API;
 
+        $scope.popupData = Data;
+
         ngDialog.open({
 
             template: template,
             className: 'ngdialog-theme-default',
             scope: $scope,
         });
+    }
 
+    $scope.postForm = function(API, Data){
+
+        $scope.processing = true;
+
+        var url = $scope.base_url + API;
+        
+        var requestData = new FormData();
+
+        angular.forEach(Data, function (value, key) {
+                        
+            requestData.append(key, value);
+        });
+
+        
+        $http({
+            method : "POST",
+            url : url,
+            headers: {
+                        'Content-Type': undefined,
+                    },
+            data: requestData,
+        }).then(
+
+            function (response) {
+                
+                aap_con.handleFormResponse(response.data);
+                $scope.processing = false;
+            }, 
+
+            function (error) {
+
+                aap_con.handleFormResponse(error.data);
+                $scope.processing = false;
+            }
+        );
+    }
+
+    aap_con.handleFormResponse = function(data){
+    
+        if(data.reload != undefined){
+
+            location.reload();
+        }
+
+        if(data.redirect != undefined){
+
+            var url = $scope.base_url + data.redirect;
+
+            window.location = url;
+        }
     }
 
 }]);

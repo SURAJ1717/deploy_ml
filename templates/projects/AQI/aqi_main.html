@@ -16,12 +16,7 @@
 
                             <button type="button" class="btn btn-sm btn-outline-success float-right"
                                 ng-if="model_present == 'False'">
-                                Build Model
-                            </button>
-
-                            <button type="button" class="btn btn-sm btn-outline-success float-right mx-2"
-                                ng-if="model_present == 'True'" >
-                                Predict
+                                <i class="fas fa-cloud-download-alt mx-2"></i>  Download CSV
                             </button>
 
                             <button type="button" ng-disabled="form.formservice.processing" class="btn btn-sm btn-outline-danger float-right mx-2"
@@ -31,20 +26,25 @@
                             </button>
                         </div>
 
+                        <!-- Include form body for Model Prediction Result -->
+                        <div class="card-body" ng-if="model_present == 'True'">
+                            {% include "/projects/AQI/includes/model_prediction.html" %}
+                        </div>
+
                         <!-- Include form body for Normal inputs -->
-                        <div class="card-body" ng-if="step == 'one'">
-                            {% include "/projects/AQI/includes/formbody.html" %}
+                        <div class="card-body" ng-if="model_present == 'False' && step == 'one'">
+                            {% include "/projects/AQI/includes/alogrithms_inputs.html" %}
                         </div>
 
                         <!-- Include form body for Hyper-Parameteric inputs -->
-                        <div class="card-body" ng-if="step == 'two'">
+                        <div class="card-body" ng-if="model_present == 'False' && step == 'two'">
                             {% include "/projects/AQI/includes/algorithms_hyper_inputs.html" %}
                         </div>
 
                         <!-- Next, Back & submit button -->
                         <span class="form-buttons m-4" ng-class="{'d-none': model_present == 'True'}">
                             <button type="button" class="btn btn-sm btn-outline-dark float-right px-5"
-                                ng-class="{'d-none': step == 'two' }"
+                                ng-class="{'d-none': step == 'two'}"
                                 ng-click="step='two'; form.formservice.selected_algo()">
                                 Next
                             </button>
@@ -66,11 +66,6 @@
             </div>
 
         </div>
-    </section>
-
-    <!-- Include result popup when form submitted -->
-    <section id="result_section" class="d-none w-100">
-        {% include "/projects/AQI/includes/result_popup.html" %}
     </section>
 
 </div>

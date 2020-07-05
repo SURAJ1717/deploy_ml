@@ -1,7 +1,7 @@
 
-app.controller('FormController', ['$scope','formService', '$http', 
+app.controller('FormController', ['$scope','formService', '$http', 'ngDialog',
 
-    function($scope, formService, $http){
+    function($scope, formService, $http, ngDialog){
 
         var vm = this;
 
@@ -11,7 +11,7 @@ app.controller('FormController', ['$scope','formService', '$http',
 
         vm.buildModel = function(path, project_tag){
 
-            var API = vm.formservice.base_url + path;
+            var API = $scope.base_url + path;
 
             vm.formData = vm.formservice.prepareFormdata();
             
@@ -28,10 +28,23 @@ app.controller('FormController', ['$scope','formService', '$http',
 
                 vm.excecuteAlgorithm(API);
 
-                $("#result_section").addClass("result-popup d-block");
+                vm.openProcessingPopup();
             }
 
         };
+
+        vm.openProcessingPopup = function(){
+  
+            var template = $scope.base_url + '/projects/AQI/includes/result_popup.html';
+    
+            ngDialog.open({
+    
+                template: template,
+                className: 'ngdialog-theme-plain',
+                scope: $scope,
+                width: '95%'
+            });
+        }
 
         vm.excecuteAlgorithm = function(API){
 

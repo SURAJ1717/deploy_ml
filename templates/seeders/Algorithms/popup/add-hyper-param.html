@@ -1,0 +1,87 @@
+<div ng-controller="AppController" class="mt-4">
+    <div class="card" ng-init="formData={};formData.algorithm_id=popupData">
+        <div class="card-header text-center bg-white">
+            Add Hyper Params
+        </div>
+        <div class="card-body">
+            <form ng-submit="postForm('/api_seed/hyper-params/add', formData)">
+                <div class="row">
+                    <div class="col-12">
+                        <div class="form-group">
+                            <label class="h6" for="algorithm_name">Hyper-Param Name</label>
+                            <input type="text" class="form-control" id="algorithm_name" ng-model="formData.name">
+                        </div>
+                    </div>
+                    
+                    <div class="col-12">
+                        <div class="form-group">
+                            <label class="h6" for="algorithm_slug">Hyper-Param Slug</label>
+                            <input type="text" class="form-control" id="algorithm_slug" ng-model="formData.slug">
+                        </div>
+                    </div>
+
+                    <div class="col-12">
+                        <label class="h6">Hyper-Param data-type</label>
+                    </div>
+                    <div class="col-12 d-flex mb-4" ng-init="datatype='number'">
+                        <div class="input-group w-50 mx-2">
+                            <div class="input-group-prepend">
+                                <div class="input-group-text">
+                                    <input type="radio" name="radiobtn" value="number" ng-model="datatype">
+                                </div>
+                            </div>
+                            <input type="text" class="form-control bg-white" value="Number" disabled>
+                        </div>
+
+                        <div class="input-group w-50 mx-2">
+                            <div class="input-group-prepend">
+                                <div class="input-group-text">
+                                    <input type="radio" name="radiobtn" value="text" ng-model="datatype">
+                                </div>
+                            </div>
+                            <input type="text" class="form-control bg-white" value="Text" disabled>
+                        </div>
+                    </div>
+                    
+                    <div class="col-12" ng-init="formData.params=[];">
+                        <div class="input-group" ng-if="datatype == 'number'">
+                            <label class="h6 w-100">Hyper-Param Values</label>
+
+                            <input type="number" class="form-control" ng-model="paramSingleNum">
+                            
+                            <div class="input-group-append">
+                                <button ng-disabled="paramSingleNum==''" class="btn btn-outline-dark" type="button"
+                                    ng-click="formData.params.push(paramSingleNum); paramSingleNum=''">+ ADD</button>
+                            </div>
+                        </div>
+
+                        <div class="input-group" ng-if="datatype == 'text'">
+                            <label class="h6 w-100">Hyper-Param Values</label>
+
+                            <input type="text" class="form-control" ng-model="paramSingleText">
+                            
+                            <div class="input-group-append">
+                                <button ng-disabled="paramSingleText==''" class="btn btn-outline-dark" type="button"
+                                    ng-click="formData.params.push(paramSingleText); paramSingleText=''">+ ADD</button>
+                            </div>
+                        </div>
+
+                        <p class="card-text my-3">
+                            <span class="single-param mr-2" ng-repeat="(key, item) in formData.params">
+                                [[item]] <i class="fas fa-times ml-2" ng-click="formData.params.splice(key, 1)"
+                                    style="cursor: pointer;"></i>
+                            </span>
+                        </p>
+                    </div>
+
+                    <div class="col-12 mt-4 text-center">
+                        <button ng-disabled="processing" class="btn btn-sm btn-outline-primary">
+                            <span ng-if="!processing"> Add </span>
+                            <span ng-if="processing">Please Wait.. <i class="fas fa-spinner fa-spin"></i></span>
+                        </button>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>

@@ -1,0 +1,55 @@
+{% extends '/base.html' %}
+
+{% block body %}
+
+<div class="block-body">
+    <div class="container-fluid"
+        ng-init="algorithm_id='{{ data.algorithm_id }}'; hyper_params=fetchAPIData('/api_seed/'+[[algorithm_id]]+'/HyperParams/all')">
+        <div class="row mt-5">
+            <div class="col-10 offset-1 text-right mb-2">
+                <button class="btn btn-sm btn-outline-primary"
+                    ng-click="openPopup('/seeders/Algorithms/popup/add-hyper-param.html', algorithm_id )">
+                    <i class="fas fa-plus"></i> Add Hyper Parameter
+                </button>
+            </div>
+
+            <div class="col-10 offset-1">
+                <div class="card w-100 mb-5">
+                    <div class="card-header bg-white mb-3">
+                        <h5>Linear Regression</h5>
+                    </div>
+
+                    <div class="card-body d-flex m-3 p-0 pb-2 border-bottom"
+                        ng-repeat="item in hyper_params.hyper_params">
+
+                        <div class="w-75">
+                            <p style="color: red;">[[item.name]]</p>
+                            <p class="card-text">
+                                <span class="single-param mr-2" ng-repeat="param in item.params">
+                                    [[param]] 
+                                    <!-- <i class="fas fa-times ml-2"></i> -->
+                                </span> 
+                            </p>
+                        </div>
+
+                        <div class="w-25 text-right m-auto">
+                            <button class="btn btn-sm btn-outline-primary mx-3"
+                                ng-click="openPopup('/seeders/Algorithms/popup/edit-hyper-param.html', item)">
+                                <i class="fas fa-pencil-alt"></i>
+                            </button>
+
+                            <button ng-disabled="processing" class="btn btn-sm btn-outline-danger"
+                                ng-click="postForm('/api_seed/hyper-params/delete', item)">
+                                <i ng-if="!processing" class="fas fa-trash"></i>
+                                <i ng-if="processing" class="fas fa-spinner fa-spin"></i>
+                            </button>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+{% endblock %}
