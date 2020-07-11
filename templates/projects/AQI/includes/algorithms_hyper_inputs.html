@@ -1,515 +1,56 @@
-
 <ul class="nav border-bottom small">
-    <span ng-repeat="(key, item) in form.formservice.checked_algos_form">
-
-        <li class="nav-item" ng-if="item == 'linear_regressor'"
-            ng-init="key==0 ? form.formservice.openTab('linear_tab') : a_key=key"
-            ng-click="form.formservice.openTab('linear_tab')">
-            <a class="nav-link text-secondary"
-                ng-class="{'text-info border-bottom border-info': form.formservice.linear_tab}" href="">Linear Regression</a>
+    <span ng-repeat="(key, item) in form.formservice.formData.algorithms">
+        <li class="nav-item" ng-if="item.added" ng-click="form.formservice.openTab(item)">
+            <a class="nav-link text-secondary" ng-class="{'text-info border-bottom border-info': item.current_tab }"
+                href="">
+                [[ item.short_name ]]
+            </a>
         </li>
-
-        <li class="nav-item" ng-if="item == 'ridge_regressor'"
-            ng-init="key==0 ? form.formservice.openTab('ridge_tab') : a_key=key"
-            ng-click="form.formservice.openTab('ridge_tab')">
-            <a class="nav-link text-secondary"
-                ng-class="{'text-info border-bottom border-info': form.formservice.ridge_tab}" href="">Ridge</a>
-        </li>
-
-        <li class="nav-item" ng-if="item == 'lasso_regressor'"
-            ng-init="key==0 ? form.formservice.openTab('lasso_tab') : a_key=key"
-            ng-click="form.formservice.openTab('lasso_tab')">
-            <a class="nav-link text-secondary"
-                ng-class="{'text-info border-bottom border-info': form.formservice.lasso_tab}" href="">Lasso</a>
-        </li>
-
-        <li class="nav-item" ng-if="item == 'dt_regressor'"
-            ng-init="key==0 ? form.formservice.openTab('dt_tab') : a_key=key"
-            ng-click="form.formservice.openTab('dt_tab')">
-            <a class="nav-link text-secondary"
-                ng-class="{'text-info border-bottom border-info': form.formservice.dt_tab}" href="">Decision
-                Tree</a>
-        </li>
-
-        <li class="nav-item" ng-if="item == 'rf_regressor'"
-            ng-init="key==0 ? form.formservice.openTab('rf_tab') : a_key=key"
-            ng-click="form.formservice.openTab('rf_tab')">
-            <a class="nav-link text-secondary"
-                ng-class="{'text-info border-bottom border-info': form.formservice.rf_tab}" href="">Random
-                Forest</a>
-        </li>
-
-        <li class="nav-item" ng-if="item == 'xgb_regressor'"
-            ng-init="key==0 ? form.formservice.openTab('xgb_tab') : a_key=key"
-            ng-click="form.formservice.openTab('xgb_tab')">
-            <a class="nav-link text-secondary"
-                ng-class="{'text-info border-bottom border-info': form.formservice.xgb_tab}" href="">Xg-boost</a>
-        </li>
-
     </span>
 </ul>
 
 <div class="row my-4">
 
-    <div class="col-12" ng-if="form.formservice.linear_tab">
-        <h4>Linear Parameters</h4>
-        <div class="row mt-3">
-            <div class="col-12">
+    <div class="col-12" ng-repeat="(key, item) in form.formservice.formData.algorithms"
+        ng-if="item.added && item.current_tab">
+
+        <h4>[[item.name]]</h4>
+       
+        <div class="row mt-3" ng-init="parameter={};">
+            <div class="col-12" ng-if="item.hyper_params.length == 0">
                 <div class="alert alert-danger text-center w-100 mt-5">
                     Hyper Parameter tuning feature is <strong>not available</strong> for this model
                 </div>
             </div>
-        </div>
-    </div>
 
-    <div class="col-12" ng-if="form.formservice.ridge_tab">
-        <h4>Rideg Parameters</h4>
-        <div class="row mt-3">
-            <div class="col-6 mb-4">
-                <div class="input-group">
-                    <input type="number" class="form-control" placeholder="Alpha Values" ng-model="ridge_alpha">
+            <div class="w-100 d-flex mt-3" ng-if="item.hyper_params.length > 0" ng-repeat="(key, param) in item.hyper_params">
+                <div class="col-6 mb-4">
+                    <div class="input-group">
+                        <input type="text" class="form-control" placeholder="[[param.name]]" ng-model="parameter[key]">
 
-                    <div class="input-group-append">
-                        <button class="btn btn-dark" type="button"
-                            ng-click="form.formservice.appendAlgoParamInputs(ridge_alpha, 'ridge_params', 'alpha'); ridge_alpha=''">
-                            Add
-                        </button>
+                        <div class="input-group-append" ng-init="param.custom_para=[];">
+                            <button class="btn btn-dark" type="button"
+                                ng-click="param.custom_para.push(parameter[key]); parameter[key]=''">
+                                Add 
+                            </button>
+                        </div>
                     </div>
+                    
+                    <p class="p-1 ml-3 mt-2 badge badge-dark font-weight-light"
+                        ng-if="param.custom_para.length != 0">
+
+                        <span ng-repeat="cus_para in param.custom_para">[[cus_para]], </span>
+                        
+                        <i class="fa fa-times px-3" style="cursor: pointer;"
+                            ng-click="param.custom_para=[]"></i>
+                    </p>
                 </div>
-                <p class="p-1 ml-3 mt-2 badge badge-dark font-weight-light"
-                    ng-if="form.formservice.ridge_params.alpha.length != 0">
-                    <span ng-repeat="item in form.formservice.ridge_params.alpha">[[item]], </span>
-                    <i class="fa fa-times px-3" style="cursor: pointer;"
-                        ng-click="form.formservice.resetAlgoParamInputs('ridge_params','alpha')"></i>
-                </p>
-            </div>
-            <div class="col-6 mb-4">
-                <p class="text-secondary small"><strong>Default: </strong> <span
-                        ng-repeat="item in form.formservice.default_ridge_params.alpha">[[item]], </span></p>
-            </div>
-        </div>
-    </div>
 
-    <div class="col-12" ng-if="form.formservice.lasso_tab">
-        <h4>Lasso Parameters</h4>
-        <div class="row mt-3">
-            <div class="col-6 mb-4">
-                <div class="input-group">
-                    <input type="number" class="form-control" placeholder="Alpha Values" ng-model="lasso_alpha">
-
-                    <div class="input-group-append">
-                        <button class="btn btn-dark" type="button"
-                            ng-click="form.formservice.appendAlgoParamInputs(lasso_alpha, 'lasso_params', 'alpha'); lasso_alpha=''">
-                            Add
-                        </button>
-                    </div>
+                <div class="col-6 mb-4">
+                    <p class="text-secondary small">
+                        <strong>Default: </strong> 
+                        <span ng-repeat="each_para in param.params">[[each_para]], </span></p>
                 </div>
-                <p class="p-1 ml-3 mt-2 badge badge-dark font-weight-light"
-                    ng-if="form.formservice.lasso_params.alpha.length != 0">
-                    <span ng-repeat="item in form.formservice.lasso_params.alpha">[[item]], </span>
-                    <i class="fa fa-times px-3" style="cursor: pointer;"
-                        ng-click="form.formservice.resetAlgoParamInputs('lasso_params','alpha')"></i>
-                </p>
-            </div>
-            <div class="col-6 mb-4">
-                <p class="text-secondary small"><strong>Default: </strong> <span
-                        ng-repeat="item in form.formservice.default_lasso_params.alpha">[[item]], </span></p>
-            </div>
-        </div>
-    </div>
-
-    <div class="col-12" ng-if="form.formservice.dt_tab">
-        <h4>Decision Tree Parameters</h4>
-        <div class="row mt-3">
-            <div class="col-6 mb-4">
-                <div class="input-group">
-                    <input type="text" class="form-control" placeholder="Splitter Values" ng-model="dt_splitter">
-
-                    <div class="input-group-append">
-                        <button class="btn btn-dark" type="button"
-                            ng-click="form.formservice.appendAlgoParamInputs(dt_splitter, 'dt_params', 'splitter'); dt_splitter=''">
-                            Add
-                        </button>
-                    </div>
-                </div>
-                <p class="p-1 ml-3 mt-2 badge badge-dark font-weight-light"
-                    ng-if="form.formservice.dt_params.splitter.length != 0">
-                    <span ng-repeat="item in form.formservice.dt_params.splitter">[[item]], </span>
-                    <i class="fa fa-times px-3" style="cursor: pointer;"
-                        ng-click="form.formservice.resetAlgoParamInputs('dt_params','splitter')"></i>
-                </p>
-            </div>
-            <div class="col-6 mb-4">
-                <p class="text-secondary small"><strong>Default: </strong> <span
-                        ng-repeat="item in form.formservice.default_dt_params.splitter">[[item]], </span></p>
-            </div>
-
-            <div class="col-6 mb-4">
-                <div class="input-group">
-                    <input type="number" class="form-control" placeholder="Max depth Values" ng-model="dt_max_depth">
-
-                    <div class="input-group-append">
-                        <button class="btn btn-dark" type="button"
-                            ng-click="form.formservice.appendAlgoParamInputs(dt_max_depth, 'dt_params', 'max_depth'); dt_max_depth=''">
-                            Add
-                        </button>
-                    </div>
-                </div>
-                <p class="p-1 ml-3 mt-2 badge badge-dark font-weight-light"
-                    ng-if="form.formservice.dt_params.max_depth.length != 0">
-                    <span ng-repeat="item in form.formservice.dt_params.max_depth">[[item]], </span>
-                    <i class="fa fa-times px-3" style="cursor: pointer;"
-                        ng-click="form.formservice.resetAlgoParamInputs('dt_params','max_depth')"></i>
-                </p>
-            </div>
-            <div class="col-6 mb-4">
-                <p class="text-secondary small"><strong>Default: </strong> <span
-                        ng-repeat="item in form.formservice.default_dt_params.max_depth">[[item]], </span></p>
-            </div>
-
-            <div class="col-6 mb-4">
-                <div class="input-group">
-                    <input type="number" class="form-control" placeholder="Min Samples leaf Values"
-                        ng-model="dt_min_samples_leaf">
-
-                    <div class="input-group-append">
-                        <button class="btn btn-dark" type="button"
-                            ng-click="form.formservice.appendAlgoParamInputs(dt_min_samples_leaf, 'dt_params', 'min_samples_leaf'); dt_min_samples_leaf=''">
-                            Add
-                        </button>
-                    </div>
-                </div>
-                <p class="p-1 ml-3 mt-2 badge badge-dark font-weight-light"
-                    ng-if="form.formservice.dt_params.min_samples_leaf.length != 0">
-                    <span ng-repeat="item in form.formservice.dt_params.min_samples_leaf">[[item]], </span>
-                    <i class="fa fa-times px-3" style="cursor: pointer;"
-                        ng-click="form.formservice.resetAlgoParamInputs('dt_params','min_samples_leaf')"></i>
-                </p>
-            </div>
-            <div class="col-6 mb-4">
-                <p class="text-secondary small"><strong>Default: </strong> <span
-                        ng-repeat="item in form.formservice.default_dt_params.min_samples_leaf">[[item]], </span></p>
-            </div>
-
-            <div class="col-6 mb-4">
-                <div class="input-group">
-                    <input type="number" class="form-control" placeholder="Min weight fraction leaf Values"
-                        ng-model="dt_min_weight_fraction_leaf">
-
-                    <div class="input-group-append">
-                        <button class="btn btn-dark" type="button"
-                            ng-click="form.formservice.appendAlgoParamInputs(dt_min_weight_fraction_leaf, 'dt_params', 'min_weight_fraction_leaf'); dt_min_weight_fraction_leaf=''">
-                            Add
-                        </button>
-                    </div>
-                </div>
-                <p class="p-1 ml-3 mt-2 badge badge-dark font-weight-light"
-                    ng-if="form.formservice.dt_params.min_weight_fraction_leaf.length != 0">
-                    <span ng-repeat="item in form.formservice.dt_params.min_weight_fraction_leaf">[[item]],
-                    </span>
-                    <i class="fa fa-times px-3" style="cursor: pointer;"
-                        ng-click="form.formservice.resetAlgoParamInputs('dt_params','min_weight_fraction_leaf')"></i>
-                </p>
-            </div>
-            <div class="col-6 mb-4">
-                <p class="text-secondary small"><strong>Default: </strong> <span
-                        ng-repeat="item in form.formservice.default_dt_params.min_weight_fraction_leaf">[[item]],
-                    </span></p>
-            </div>
-
-            <div class="col-6 mb-4">
-                <div class="input-group">
-                    <input type="text" class="form-control" placeholder="Max Features Values"
-                        ng-model="dt_max_features">
-
-                    <div class="input-group-append">
-                        <button class="btn btn-dark" type="button"
-                            ng-click="form.formservice.appendAlgoParamInputs(dt_max_features, 'dt_params', 'max_features'); dt_max_features=''">
-                            Add
-                        </button>
-                    </div>
-                </div>
-                <p class="p-1 ml-3 mt-2 badge badge-dark font-weight-light"
-                    ng-if="form.formservice.dt_params.max_features.length != 0">
-                    <span ng-repeat="item in form.formservice.dt_params.max_features">[[item]], </span>
-                    <i class="fa fa-times px-3" style="cursor: pointer;"
-                        ng-click="form.formservice.resetAlgoParamInputs('dt_params','max_features')"></i>
-                </p>
-            </div>
-            <div class="col-6 mb-4">
-                <p class="text-secondary small"><strong>Default: </strong> <span
-                        ng-repeat="item in form.formservice.default_dt_params.max_features">[[item]], </span></p>
-            </div>
-
-            <div class="col-6 mb-4">
-                <div class="input-group">
-                    <input type="number" class="form-control" placeholder="Max leaf nodes Values"
-                        ng-model="dt_max_leaf_nodes">
-
-                    <div class="input-group-append">
-                        <button class="btn btn-dark" type="button"
-                            ng-click="form.formservice.appendAlgoParamInputs(dt_max_leaf_nodes, 'dt_params', 'max_leaf_nodes'); dt_max_leaf_nodes=''">
-                            Add
-                        </button>
-                    </div>
-                </div>
-                <p class="p-1 ml-3 mt-2 badge badge-dark font-weight-light"
-                    ng-if="form.formservice.dt_params.max_leaf_nodes.length != 0">
-                    <span ng-repeat="item in form.formservice.dt_params.max_leaf_nodes">[[item]], </span>
-                    <i class="fa fa-times px-3" style="cursor: pointer;"
-                        ng-click="form.formservice.resetAlgoParamInputs('dt_params','max_leaf_nodes')"></i>
-                </p>
-            </div>
-            <div class="col-6 mb-4">
-                <p class="text-secondary small"><strong>Default: </strong> <span
-                        ng-repeat="item in form.formservice.default_dt_params.max_leaf_nodes">[[item]], </span></p>
-            </div>
-        </div>
-    </div>
-
-    <div class="col-12" ng-if="form.formservice.rf_tab">
-        <h4>Random Forest Parameters</h4>
-        <div class="row mt-3">
-            <div class="col-6 mb-4">
-                <div class="input-group">
-                    <input type="number" class="form-control" placeholder="N estimators Values"
-                        ng-model="rf_n_estimators">
-
-                    <div class="input-group-append">
-                        <button class="btn btn-dark" type="button"
-                            ng-click="form.formservice.appendAlgoParamInputs(rf_n_estimators, 'rf_params', 'n_estimators'); rf_n_estimators=''">
-                            Add
-                        </button>
-                    </div>
-                </div>
-                <p class="p-1 ml-3 mt-2 badge badge-dark font-weight-light"
-                    ng-if="form.formservice.rf_params.n_estimators.length != 0">
-                    <span ng-repeat="item in form.formservice.rf_params.n_estimators">[[item]], </span>
-                    <i class="fa fa-times px-3" style="cursor: pointer;"
-                        ng-click="form.formservice.resetAlgoParamInputs('rf_params','n_estimators')"></i>
-                </p>
-            </div>
-            <div class="col-6 mb-4">
-                <p class="text-secondary small"><strong>Default: </strong> <span
-                        ng-repeat="item in form.formservice.default_rf_params.n_estimators">[[item]], </span></p>
-            </div>
-
-            <div class="col-6 mb-4">
-                <div class="input-group">
-                    <input type="number" class="form-control" placeholder="Min samples split Values"
-                        ng-model="rf_min_samples_split">
-
-                    <div class="input-group-append">
-                        <button class="btn btn-dark" type="button"
-                            ng-click="form.formservice.appendAlgoParamInputs(rf_min_samples_split, 'rf_params', 'min_samples_split'); rf_min_samples_split=''">
-                            Add
-                        </button>
-                    </div>
-                </div>
-                <p class="p-1 ml-3 mt-2 badge badge-dark font-weight-light"
-                    ng-if="form.formservice.rf_params.min_samples_split.length != 0">
-                    <span ng-repeat="item in form.formservice.rf_params.min_samples_split">[[item]], </span>
-                    <i class="fa fa-times px-3" style="cursor: pointer;"
-                        ng-click="form.formservice.resetAlgoParamInputs('rf_params','min_samples_split')"></i>
-                </p>
-            </div>
-            <div class="col-6 mb-4">
-                <p class="text-secondary small"><strong>Default: </strong> <span
-                        ng-repeat="item in form.formservice.default_rf_params.min_samples_split">[[item]], </span></p>
-            </div>
-
-            <div class="col-6 mb-4">
-                <div class="input-group">
-                    <input type="text" class="form-control" placeholder="Max Features Values"
-                        ng-model="rf_max_features">
-
-                    <div class="input-group-append">
-                        <button class="btn btn-dark" type="button"
-                            ng-click="form.formservice.appendAlgoParamInputs(rf_max_features, 'rf_params', 'max_features'); rf_max_features=''">
-                            Add
-                        </button>
-                    </div>
-                </div>
-                <p class="p-1 ml-3 mt-2 badge badge-dark font-weight-light"
-                    ng-if="form.formservice.rf_params.max_features.length != 0">
-                    <span ng-repeat="item in form.formservice.rf_params.max_features">[[item]], </span>
-                    <i class="fa fa-times px-3" style="cursor: pointer;"
-                        ng-click="form.formservice.resetAlgoParamInputs('rf_params','max_features')"></i>
-                </p>
-            </div>
-            <div class="col-6 mb-4">
-                <p class="text-secondary small"><strong>Default: </strong> <span
-                        ng-repeat="item in form.formservice.default_rf_params.max_features">[[item]], </span></p>
-            </div>
-
-            <div class="col-6 mb-4">
-                <div class="input-group">
-                    <input type="number" class="form-control" placeholder="Max depth Values" ng-model="rf_max_depth">
-
-                    <div class="input-group-append">
-                        <button class="btn btn-dark" type="button"
-                            ng-click="form.formservice.appendAlgoParamInputs(rf_max_depth, 'rf_params', 'max_depth'); rf_max_depth=''">
-                            Add
-                        </button>
-                    </div>
-                </div>
-                <p class="p-1 ml-3 mt-2 badge badge-dark font-weight-light"
-                    ng-if="form.formservice.rf_params.max_depth.length != 0">
-                    <span ng-repeat="item in form.formservice.rf_params.max_depth">[[item]], </span>
-                    <i class="fa fa-times px-3" style="cursor: pointer;"
-                        ng-click="form.formservice.resetAlgoParamInputs('rf_params','max_depth')"></i>
-                </p>
-            </div>
-            <div class="col-6 mb-4">
-                <p class="text-secondary small"><strong>Default: </strong> <span
-                        ng-repeat="item in form.formservice.default_rf_params.max_depth">[[item]], </span></p>
-            </div>
-
-            <div class="col-6 mb-4">
-                <div class="input-group">
-                    <input type="number" class="form-control" placeholder="Min Samples leaf Values"
-                        ng-model="rf_min_samples_leaf">
-
-                    <div class="input-group-append">
-                        <button class="btn btn-dark" type="button"
-                            ng-click="form.formservice.appendAlgoParamInputs(rf_min_samples_leaf, 'rf_params', 'min_samples_leaf'); rf_min_samples_leaf=''">
-                            Add
-                        </button>
-                    </div>
-                </div>
-                <p class="p-1 ml-3 mt-2 badge badge-dark font-weight-light"
-                    ng-if="form.formservice.rf_params.min_samples_leaf.length != 0">
-                    <span ng-repeat="item in form.formservice.rf_params.min_samples_leaf">[[item]], </span>
-                    <i class="fa fa-times px-3" style="cursor: pointer;"
-                        ng-click="form.formservice.resetAlgoParamInputs('rf_params','min_samples_leaf')"></i>
-                </p>
-            </div>
-            <div class="col-6 mb-4">
-                <p class="text-secondary small"><strong>Default: </strong> <span
-                        ng-repeat="item in form.formservice.default_rf_params.min_samples_leaf">[[item]], </span></p>
-            </div>
-        </div>
-    </div>
-
-    <div class="col-12" ng-if="form.formservice.xgb_tab">
-        <h4>Xg-boost Parameters</h4>
-        <div class="row mt-3">
-            <div class="col-6 mb-4">
-                <div class="input-group">
-                    <input type="number" class="form-control" placeholder="N estimators Values"
-                        ng-model="xgb_n_estimators">
-
-                    <div class="input-group-append">
-                        <button class="btn btn-dark" type="button"
-                            ng-click="form.formservice.appendAlgoParamInputs(xgb_n_estimators, 'xgb_params', 'n_estimators'); xgb_n_estimators=''">
-                            Add
-                        </button>
-                    </div>
-                </div>
-                <p class="p-1 ml-3 mt-2 badge badge-dark font-weight-light"
-                    ng-if="form.formservice.xgb_params.n_estimators.length != 0">
-                    <span ng-repeat="item in form.formservice.xgb_params.n_estimators">[[item]], </span>
-                    <i class="fa fa-times px-3" style="cursor: pointer;"
-                        ng-click="form.formservice.resetAlgoParamInputs('xgb_params','n_estimators')"></i>
-                </p>
-            </div>
-            <div class="col-6 mb-4">
-                <p class="text-secondary small"><strong>Default: </strong> <span
-                        ng-repeat="item in form.formservice.default_xgb_params.n_estimators">[[item]], </span></p>
-            </div>
-
-            <div class="col-6 mb-4">
-                <div class="input-group">
-                    <input type="text" class="form-control" placeholder="Learning rate Values"
-                        ng-model="xgb_learning_rate">
-
-                    <div class="input-group-append">
-                        <button class="btn btn-dark" type="button"
-                            ng-click="form.formservice.appendAlgoParamInputs(xgb_learning_rate, 'xgb_params', 'learning_rate'); xgb_learning_rate=''">
-                            Add
-                        </button>
-                    </div>
-                </div>
-                <p class="p-1 ml-3 mt-2 badge badge-dark font-weight-light"
-                    ng-if="form.formservice.xgb_params.learning_rate.length != 0">
-                    <span ng-repeat="item in form.formservice.xgb_params.learning_rate">[[item]], </span>
-                    <i class="fa fa-times px-3" style="cursor: pointer;"
-                        ng-click="form.formservice.resetAlgoParamInputs('xgb_params','learning_rate')"></i>
-                </p>
-            </div>
-            <div class="col-6 mb-4">
-                <p class="text-secondary small"><strong>Default: </strong> <span
-                        ng-repeat="item in form.formservice.default_xgb_params.learning_rate">[[item]], </span></p>
-            </div>
-
-            <div class="col-6 mb-4">
-                <div class="input-group">
-                    <input type="number" class="form-control" placeholder="Min child weight Values"
-                        ng-model="xgb_min_child_weight">
-
-                    <div class="input-group-append">
-                        <button class="btn btn-dark" type="button"
-                            ng-click="form.formservice.appendAlgoParamInputs(xgb_min_child_weight, 'xgb_params', 'min_child_weight'); xgb_min_child_weight=''">
-                            Add
-                        </button>
-                    </div>
-                </div>
-                <p class="p-1 ml-3 mt-2 badge badge-dark font-weight-light"
-                    ng-if="form.formservice.xgb_params.min_child_weight.length != 0">
-                    <span ng-repeat="item in form.formservice.xgb_params.min_child_weight">[[item]], </span>
-                    <i class="fa fa-times px-3" style="cursor: pointer;"
-                        ng-click="form.formservice.resetAlgoParamInputs('xgb_params','min_child_weight')"></i>
-                </p>
-            </div>
-            <div class="col-6 mb-4">
-                <p class="text-secondary small"><strong>Default: </strong> <span
-                        ng-repeat="item in form.formservice.default_xgb_params.min_child_weight">[[item]], </span></p>
-            </div>
-
-            <div class="col-6 mb-4">
-                <div class="input-group">
-                    <input type="number" class="form-control" placeholder="Max depth Values" ng-model="xgb_max_depth">
-
-                    <div class="input-group-append">
-                        <button class="btn btn-dark" type="button"
-                            ng-click="form.formservice.appendAlgoParamInputs(xgb_max_depth, 'xgb_params', 'max_depth'); xgb_max_depth=''">
-                            Add
-                        </button>
-                    </div>
-                </div>
-                <p class="p-1 ml-3 mt-2 badge badge-dark font-weight-light"
-                    ng-if="form.formservice.xgb_params.max_depth.length != 0">
-                    <span ng-repeat="item in form.formservice.xgb_params.max_depth">[[item]], </span>
-                    <i class="fa fa-times px-3" style="cursor: pointer;"
-                        ng-click="form.formservice.resetAlgoParamInputs('xgb_params','max_depth')"></i>
-                </p>
-            </div>
-            <div class="col-6 mb-4">
-                <p class="text-secondary small"><strong>Default: </strong> <span
-                        ng-repeat="item in form.formservice.default_xgb_params.max_depth">[[item]], </span></p>
-            </div>
-
-            <div class="col-6 mb-4">
-                <div class="input-group">
-                    <input type="number" class="form-control" placeholder="Subsample Values" ng-model="xgb_subsample">
-
-                    <div class="input-group-append">
-                        <button class="btn btn-dark" type="button"
-                            ng-click="form.formservice.appendAlgoParamInputs(xgb_subsample, 'xgb_params', 'subsample'); xgb_subsample=''">
-                            Add
-                        </button>
-                    </div>
-                </div>
-                <p class="p-1 ml-3 mt-2 badge badge-dark font-weight-light"
-                    ng-if="form.formservice.xgb_params.subsample.length != 0">
-                    <span ng-repeat="item in form.formservice.xgb_params.subsample">[[item]], </span>
-                    <i class="fa fa-times px-3" style="cursor: pointer;"
-                        ng-click="form.formservice.resetAlgoParamInputs('xgb_params','subsample')"></i>
-                </p>
-            </div>
-            <div class="col-6 mb-4">
-                <p class="text-secondary small"><strong>Default: </strong> <span
-                        ng-repeat="item in form.formservice.default_xgb_params.subsample">[[item]], </span></p>
             </div>
         </div>
     </div>

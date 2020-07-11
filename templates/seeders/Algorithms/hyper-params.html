@@ -4,7 +4,7 @@
 
 <div class="block-body">
     <div class="container-fluid"
-        ng-init="algorithm_id='{{ data.algorithm_id }}'; hyper_params=fetchAPIData('/api_seed/'+[[algorithm_id]]+'/HyperParams/all')">
+        ng-init="algorithm_id='{{ data.algorithm_id }}'; apiData=fetchAPIData('/api_seed/'+[[algorithm_id]]+'/HyperParams/all')">
         <div class="row mt-5">
             <div class="col-10 offset-1 text-right mb-2">
                 <button class="btn btn-sm btn-outline-primary"
@@ -16,14 +16,14 @@
             <div class="col-10 offset-1">
                 <div class="card w-100 mb-5">
                     <div class="card-header bg-white mb-3">
-                        <h5>Linear Regression</h5>
+                        <h5>[[apiData.algorithm.name]]</h5>
                     </div>
 
                     <div class="card-body d-flex m-3 p-0 pb-2 border-bottom"
-                        ng-repeat="item in hyper_params.hyper_params">
+                        ng-repeat="item in apiData.hyper_params">
 
                         <div class="w-75">
-                            <p style="color: red;">[[item.name]]</p>
+                            <p style="color: red;">[[item.name]] <small style="color: grey;">| [[item.datatype]]</small></p>
                             <p class="card-text">
                                 <span class="single-param mr-2" ng-repeat="param in item.params">
                                     [[param]] 
@@ -46,6 +46,9 @@
                         </div>
                     </div>
 
+                    <div class="alert alert-info m-4" ng-if="apiData.hyper_params.length == 0">
+                        Hyper parameters not added
+                    </div>
                 </div>
             </div>
         </div>

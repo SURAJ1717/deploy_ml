@@ -31,10 +31,17 @@ class SEED:
     def getALLAlgorithmsAPI(self):
 
         data = {}
-        query = {}
+        query = {'type': 'regressor'}
         all_algorithms = SEED.agorithms_table.find(query)
-            
-        data['algorithms'] = [algorithm for algorithm in all_algorithms]
+        
+        my_algorithms = [algorithm for algorithm in all_algorithms]
+   
+        for algo in my_algorithms:
+            new_query = {'algorithm_id': algo['_id']}
+            hyper_params = SEED.hyper_params_table.find(new_query)
+            algo['hyper_params'] = [param for param in hyper_params]
+
+        data['algorithms'] = my_algorithms
 
         return data
 
@@ -47,6 +54,7 @@ class SEED:
         records = {
             '_id': uuid.uuid4().hex,
             'name': formData.get('name'),
+            'short_name': formData.get('short_name'),
             'slug': formData.get('slug'),
             'type': formData.get('type'),
         }
@@ -69,6 +77,7 @@ class SEED:
                
         records = {
             'name': formData.get('name'),
+            'short_name': formData.get('short_name'),
             'slug': formData.get('slug'),
             'type': formData.get('type'),
         }
@@ -116,10 +125,14 @@ class SEED:
     def getALLHyperParamsAPI(self, algorithm_id):
 
         data = {}
-        query = {'algorithm_id': algorithm_id}
-        hyper_params = SEED.hyper_params_table.find(query)
+        hyper_query = {'algorithm_id': algorithm_id}
+        algo_query = {'_id': algorithm_id}
+        
+        hyper_params = SEED.hyper_params_table.find(hyper_query)
+        algorithm = SEED.agorithms_table.find_one(algo_query)
             
         data['hyper_params'] = [params for params in hyper_params]
+        data['algorithm'] = algorithm
 
         return data
 
@@ -135,6 +148,7 @@ class SEED:
             '_id': uuid.uuid4().hex,
             'name': formData.get('name'),
             'slug': formData.get('slug'),
+            'datatype': formData.get('datatype'),
             'algorithm_id': formData.get('algorithm_id'),
             'params': params,
         }
@@ -160,6 +174,7 @@ class SEED:
         records = {
             'name': formData.get('name'),
             'slug': formData.get('slug'),
+            'datatype': formData.get('datatype'),
             'algorithm_id': formData.get('algorithm_id'),
             'params': params,
         }

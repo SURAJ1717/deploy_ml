@@ -1,5 +1,5 @@
 <!-- Normal input for building model form -->
-<div class="row">
+<div class="row" ng-init="form.formservice.formData=fetchAPIData('/api_seed/algorithms/all')">
     <div class="form-group col-12 mb-5">
         <small><b>Please Upload CSV</b></small>
         <input class="form-control" type="file" id="file1" name="file" multiple
@@ -9,39 +9,15 @@
     </div>
 
     <div class="form-group col-12 mb-5">
-        <small><b>Select Algorithms </b><span class="text-warning px-2">Default
-                all</span></small>
+        <small>
+            <b>Select Algorithms</b>
+            <span class="text-warning px-2">Default all</span>
+        </small>
         <br>
         <div class="row">
-            <div class="col-4 mt-2">
-                <input type="checkbox" class="mx-2"
-                    ng-model="form.formservice.formData.algorithms.linear_regressor"><small>Linear
-                    Regression</small><br>
-            </div>
-            <div class="col-4 mt-2">
-                <input type="checkbox" class="mx-2"
-                    ng-model="form.formservice.formData.algorithms.ridge_regressor"><small>Ridge
-                    Regression</small><br>
-            </div>
-            <div class="col-4 mt-2">
-                <input type="checkbox" class="mx-2"
-                    ng-model="form.formservice.formData.algorithms.lasso_regressor"><small>Lasso
-                    Regression</small><br>
-            </div>
-            <div class="col-4 mt-2">
-                <input type="checkbox" class="mx-2"
-                    ng-model="form.formservice.formData.algorithms.dt_regressor"><small>Decision Tree
-                    Regression</small><br>
-            </div>
-            <div class="col-4 mt-2">
-                <input type="checkbox" class="mx-2"
-                    ng-model="form.formservice.formData.algorithms.rf_regressor"><small>Random Forest
-                    Regression</small><br>
-            </div>
-            <div class="col-4 mt-2">
-                <input type="checkbox" class="mx-2"
-                    ng-model="form.formservice.formData.algorithms.xgb_regressor"><small>Xg-boost
-                    Regression</small><br>
+            <div class="col-4 mt-2" ng-repeat="item in form.formservice.formData.algorithms">
+                <input type="checkbox" class="mx-2" ng-model="item.added">
+                <small>[[ item.name ]]</small><br>
             </div>
         </div>
     </div>
@@ -111,4 +87,3 @@
     </div>
 
 </div>
-
