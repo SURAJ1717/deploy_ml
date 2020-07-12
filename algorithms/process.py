@@ -21,59 +21,73 @@ class process:
     o_r = {}
 
     def start_built(self, formData, selected_model, csv):
-
+        
         process.o_r = {}
         
-        process.o_r['linear_regressor_output'] = 'null'
-        process.o_r['ridge_regressor_output'] = 'null'
-        process.o_r['lasso_regressor_output'] = 'null'
-        process.o_r['dt_regressor_output'] = 'null'
-        process.o_r['rf_regressor_output'] = 'null'
-        process.o_r['xgb_regressor_output'] = 'null'
-
         process.split(csv, formData)
 
         process.train_test_split(process.o_r['x'], process.o_r['y'])
         
         project_tag = formData.get('project_tag')
 
+        algorithm_slug = formData.get('algorithm_slug')
+
         if not os.path.exists("algorithms/all_fitted_models/{}".format(project_tag)):
             os.makedirs("algorithms/all_fitted_models/{}".format(project_tag))
             
         if selected_model == 'linear_regressor':
             LGR=LinearRegressionClass()
-            process.o_r['linear_regressor_output'] = LGR.build(project_tag, process.o_r['x'], process.o_r['y'], process.o_r['train_x'], process.o_r['test_x'], process.o_r['train_y'], process.o_r['test_y'], cv=formData['cv'], scoring=formData['scoring'])
+            process.o_r['linear_regressor_output'] = LGR.build(project_tag, algorithm_slug, process.o_r['x'], process.o_r['y'], process.o_r['train_x'], process.o_r['test_x'], process.o_r['train_y'], process.o_r['test_y'], cv=formData['cv'], scoring=formData['scoring'])
+            response = json.dumps({
+                                'output': json.loads(process.o_r['linear_regressor_output']),
+                                'independent_col':  list(process.o_r['independent_col']),
+                                'dependent_col':  str(process.o_r['dependent_col']),
+                            })
 
         if selected_model == 'ridge_regressor':
             RR=RidgeRegressionClass()
-            process.o_r['ridge_regressor_output'] = RR.build(project_tag, process.o_r['x'], process.o_r['y'], process.o_r['train_x'], process.o_r['test_x'], process.o_r['train_y'], process.o_r['test_y'], formData['ridge_params'], cv=formData['cv'], scoring=formData['scoring'], search_method=formData['search_type'], n_iter=formData['n_iter'])
+            process.o_r['ridge_regressor_output'] = RR.build(project_tag, algorithm_slug, process.o_r['x'], process.o_r['y'], process.o_r['train_x'], process.o_r['test_x'], process.o_r['train_y'], process.o_r['test_y'], formData['hyper_parameters'], cv=formData['cv'], scoring=formData['scoring'], search_method=formData['search_type'], n_iter=formData['n_iter'])
+            response = json.dumps({
+                                'output': json.loads(process.o_r['ridge_regressor_output']),
+                                'independent_col':  list(process.o_r['independent_col']),
+                                'dependent_col':  str(process.o_r['dependent_col']),
+                            })
 
         if selected_model == 'lasso_regressor':
             LSSR=LassoRegressionClass()
-            process.o_r['lasso_regressor_output'] = LSSR.build(project_tag, process.o_r['x'], process.o_r['y'], process.o_r['train_x'], process.o_r['test_x'], process.o_r['train_y'], process.o_r['test_y'], formData['lasso_params'], cv=formData['cv'], scoring=formData['scoring'], search_method=formData['search_type'], n_iter=formData['n_iter'])
+            process.o_r['lasso_regressor_output'] = LSSR.build(project_tag, algorithm_slug, process.o_r['x'], process.o_r['y'], process.o_r['train_x'], process.o_r['test_x'], process.o_r['train_y'], process.o_r['test_y'], formData['hyper_parameters'], cv=formData['cv'], scoring=formData['scoring'], search_method=formData['search_type'], n_iter=formData['n_iter'])
+            response = json.dumps({
+                                'output': json.loads(process.o_r['lasso_regressor_output']),
+                                'independent_col':  list(process.o_r['independent_col']),
+                                'dependent_col':  str(process.o_r['dependent_col']),
+                            })
 
         if selected_model == 'dt_regressor':
             DTR=DecisionTreeRegressorClass()
-            process.o_r['dt_regressor_output'] = DTR.build(project_tag, process.o_r['x'], process.o_r['y'], process.o_r['train_x'], process.o_r['test_x'], process.o_r['train_y'], process.o_r['test_y'], formData['dt_params'], cv=formData['cv'], scoring=formData['scoring'], search_method=formData['search_type'], n_iter=formData['n_iter'])
+            process.o_r['dt_regressor_output'] = DTR.build(project_tag, algorithm_slug, process.o_r['x'], process.o_r['y'], process.o_r['train_x'], process.o_r['test_x'], process.o_r['train_y'], process.o_r['test_y'], formData['hyper_parameters'], cv=formData['cv'], scoring=formData['scoring'], search_method=formData['search_type'], n_iter=formData['n_iter'])
+            response = json.dumps({
+                                'output': json.loads(process.o_r['dt_regressor_output']),
+                                'independent_col':  list(process.o_r['independent_col']),
+                                'dependent_col':  str(process.o_r['dependent_col']),
+                            })
 
         if selected_model == 'rf_regressor':
             RFR=RandomForestRegressorClass()
-            process.o_r['rf_regressor_output'] = RFR.build(project_tag, process.o_r['x'], process.o_r['y'], process.o_r['train_x'], process.o_r['test_x'], process.o_r['train_y'], process.o_r['test_y'], formData['rf_params'], cv=formData['cv'], scoring=formData['scoring'], search_method=formData['search_type'], n_iter=formData['n_iter'])
+            process.o_r['rf_regressor_output'] = RFR.build(project_tag, algorithm_slug, process.o_r['x'], process.o_r['y'], process.o_r['train_x'], process.o_r['test_x'], process.o_r['train_y'], process.o_r['test_y'], formData['hyper_parameters'], cv=formData['cv'], scoring=formData['scoring'], search_method=formData['search_type'], n_iter=formData['n_iter'])
+            response = json.dumps({
+                                'output': json.loads(process.o_r['rf_regressor_output']),
+                                'independent_col':  list(process.o_r['independent_col']),
+                                'dependent_col':  str(process.o_r['dependent_col']),
+                            })
 
         if selected_model == 'xgb_regressor':
             XGBR=XGBOOSTRegressorClass()
-            process.o_r['xgb_regressor_output'] = XGBR.build(project_tag, process.o_r['x'], process.o_r['y'], process.o_r['train_x'], process.o_r['test_x'], process.o_r['train_y'], process.o_r['test_y'], formData['xgb_params'], cv=formData['cv'], scoring=formData['scoring'], search_method=formData['search_type'], n_iter=formData['n_iter'])
-
-        response = json.dumps({
-                            'linear_regressor_output': json.loads(process.o_r['linear_regressor_output']),
-                            'ridge_regressor_output': json.loads(process.o_r['ridge_regressor_output']),
-                            'lasso_regressor_output': json.loads(process.o_r['lasso_regressor_output']),
-                            'dt_regressor_output': json.loads(process.o_r['dt_regressor_output']),
-                            'rf_regressor_output': json.loads(process.o_r['rf_regressor_output']),
-                            'xgb_regressor_output': json.loads(process.o_r['xgb_regressor_output']),
-                            'independent_col':  list(process.o_r['independent_col']),
-                            'dependent_col':  str(process.o_r['dependent_col']),
-                        })
+            process.o_r['xgb_regressor_output'] = XGBR.build(project_tag, algorithm_slug, process.o_r['x'], process.o_r['y'], process.o_r['train_x'], process.o_r['test_x'], process.o_r['train_y'], process.o_r['test_y'], formData['hyper_parameters'], cv=formData['cv'], scoring=formData['scoring'], search_method=formData['search_type'], n_iter=formData['n_iter'])
+            response = json.dumps({
+                                'output': json.loads(process.o_r['xgb_regressor_output']),
+                                'independent_col':  list(process.o_r['independent_col']),
+                                'dependent_col':  str(process.o_r['dependent_col']),
+                            })
 
         return response
     

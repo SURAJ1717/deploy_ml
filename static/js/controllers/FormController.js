@@ -1,44 +1,92 @@
 
-app.controller('FormController', ['$scope','formService', '$http', 'ngDialog',
+app.controller('FormController', ['$scope', 'formService', '$http', 'ngDialog',
 
-    function($scope, formService, $http, ngDialog){
+    function ($scope, formService, $http, ngDialog) {
 
         var vm = this;
 
-        vm.formData = {};
+        vm.postData = {};
         vm.formservice = formService;
-        vm.checked_algos = null;
 
-        vm.buildModel = function(path, project_tag){
+        vm.buildModel = function (path, project_tag) {
+
+            if(vm.formservice.formData.csvFiles == null){
+
+                alert('Please upload Csv');
+            }
 
             var API = $scope.base_url + path;
 
-            vm.formData = vm.formservice.prepareFormdata();
+            vm.openProcessingPopup();
             
-            vm.formData.append('project_tag', project_tag);
+            if(vm.formservice.formData.search_type == 'grid'){
 
-            vm.checked_algos = vm.formData.get('checked_algos');
-        
-            vm.checked_algos = vm.checked_algos.split(",");
-
-            if(vm.formData.get('csvFiles') == 'null'){
-
-                alert('Please upload Csv');
-            }else{
-
-                vm.excecuteAlgorithm(API);
-
-                vm.openProcessingPopup();
+                vm.formservice.formData.n_iter = 100;
+                vm.formservice.formData.random_state = 0;
             }
 
+            vm.formservice.formData.project_tag = project_tag;
+
+            var atleast_one_algo_selected = vm.formservice.formData.algorithms.find(element => element.added == true)
+
+            if (atleast_one_algo_selected != undefined) {
+                // filter out selected algorithms
+                vm.formservice.formData.algorithms = vm.formservice.formData.algorithms.filter(element => element.added == true);
+            }
+
+            vm.organiseHyperParameter();
+
+            vm.postData = new FormData();
+
+            angular.forEach(vm.formservice.formData, function (value, key) {
+
+                vm.postData.append(key, value);
+            });
+
+            vm.excecuteAlgorithm(API);
         };
 
-        vm.openProcessingPopup = function(){
-  
+        vm.organiseHyperParameter = function () {
+
+            vm.formservice.formData.algorithms.forEach(function (item) {
+
+                item.processed_hyper_parameters = {};
+
+                item.is_request_sent = false;
+
+                item.hyper_params.forEach(function (para_item) {
+
+                    if (para_item.datatype == "number") {
+
+                        if (para_item.params.length > 0) {
+
+                            para_item.params = para_item.params.map(x => parseFloat(x));
+                        }
+
+                        if (para_item.custom_para != undefined && para_item.custom_para.length > 0) {
+
+                            para_item.custom_para = para_item.custom_para.map(x => parseFloat(x));
+                        }
+                    }
+
+                    if (para_item.custom_para != undefined && para_item.custom_para.length > 0) {
+
+                        item.processed_hyper_parameters[para_item.slug] = para_item.custom_para;
+
+                    } else {
+
+                        item.processed_hyper_parameters[para_item.slug] = para_item.params;
+                    }
+                });
+            });
+        }
+
+        vm.openProcessingPopup = function () {
+
             var template = $scope.base_url + '/projects/AQI/includes/result_popup.html';
-    
+
             ngDialog.open({
-    
+
                 template: template,
                 className: 'ngdialog-theme-plain',
                 scope: $scope,
@@ -46,233 +94,57 @@ app.controller('FormController', ['$scope','formService', '$http', 'ngDialog',
             });
         }
 
-        vm.excecuteAlgorithm = function(API){
+        vm.excecuteAlgorithm = function (API) {
 
-            if(vm.checked_algos.length > 0){
+            // get first algorithm
+            var current_algo = vm.formservice.formData.algorithms.find(element => element.is_request_sent == false);
 
-                var Algorithm = vm.checked_algos.pop();
+            if (current_algo != undefined) {
+                
+                current_algo.is_request_sent = true;
 
-            }else{
+                if(vm.postData.has('hyper_parameters')){
 
-                var Algorithm = 'over';
-            }
+                    vm.postData.delete('hyper_parameters');
+                }
 
-            if( Algorithm == 'linear_regressor'){
+                vm.postData.append('hyper_parameters', JSON.stringify(current_algo.processed_hyper_parameters));
 
-                vm.builtLinearRegression(API, Algorithm);
-            }
+                if(vm.postData.has('algorithm_slug')){
+                    
+                    vm.postData.delete('algorithm_slug');
+                }
+                
+                // FOR BINARY MODEL FILE NAME
+                vm.postData.append('algorithm_slug', current_algo.slug);
 
-            if( Algorithm == 'ridge_regressor'){
+                $http({
+                    method: "POST",
+                    url: API,
+                    headers: {
+                        'Content-Type': undefined,
+                        'algorithm': current_algo.slug,
+                    },
+                    data: vm.postData,
 
-                vm.builtRidgeRegression(API, Algorithm);
-            }
+                }).then(
 
-            if( Algorithm == 'lasso_regressor'){
-
-                vm.builtLassoRegression(API, Algorithm);
-            }
-
-            if( Algorithm == 'dt_regressor'){
-
-                vm.builtDTRegression(API, Algorithm);
-            }
-
-            if( Algorithm == 'rf_regressor'){
-
-                vm.builtRFRegression(API, Algorithm);
-            }
-
-            if( Algorithm == 'xgb_regressor'){
-
-                vm.builtXGBRegression(API, Algorithm);
-            }
-        };
-        
-
-        vm.builtLinearRegression = function(API, Algorithm){
-
-            $http({
-                method : "POST",
-                url : API,
-                headers: {
-                            'Content-Type': undefined,
-                            'algorithm': Algorithm,
-                        },
-                data: vm.formData,
-            }).then(
-
-                function (response) {
-                    //success
-                    vm.formservice.output_model_Data.linear_regression = response.data;
-
-                    if(response.status == 200){
+                    function (response) {
+                        //success
+                        current_algo.success = response.data;
 
                         vm.excecuteAlgorithm(API);
+                    },
+
+                    function (error) {
+                        //error
+                        current_algo.error = error;
                     }
-                }, 
-
-                function (error) {
-                    //error
-                    vm.formservice.output_model_Data.linear_regression_error = error;
-
-                    vm.excecuteAlgorithm(API);
-                }
-            );
+                );
+            }
         };
 
-        vm.builtRidgeRegression = function(API, Algorithm){
 
-            $http({
-                method : "POST",
-                url : API,
-                headers: {
-                            'Content-Type': undefined,
-                            'algorithm': Algorithm,
-                        },
-                data: vm.formData,
-            }).then(
-
-                function (response) {
-                    //success
-                    vm.formservice.output_model_Data.ridge_regression = response.data;
-
-                    if(response.status == 200){
-
-                        vm.excecuteAlgorithm(API);
-                    }
-                }, 
-
-                function (error) {
-                    //error
-                    vm.formservice.output_model_Data.ridge_regression_error = error;
-
-                    vm.excecuteAlgorithm(API);
-                }
-            );
-        };
-
-        vm.builtLassoRegression = function(API, Algorithm){
-
-            $http({
-                method : "POST",
-                url : API,
-                headers: {
-                            'Content-Type': undefined,
-                            'algorithm': Algorithm,
-                        },
-                data: vm.formData,
-            }).then(
-
-                function (response) {
-                    //success
-                    vm.formservice.output_model_Data.lasso_regression = response.data;
-
-                    if(response.status == 200){
-
-                        vm.excecuteAlgorithm(API);
-                    }
-                }, 
-
-                function (error) {
-                    //error
-                   vm.formservice.output_model_Data.lasso_regression_error = error;
-
-                   vm.excecuteAlgorithm(API);
-                }
-            );
-        };
-
-        vm.builtDTRegression = function(API, Algorithm){
-
-            $http({
-                method : "POST",
-                url : API,
-                headers: {
-                            'Content-Type': undefined,
-                            'algorithm': Algorithm,
-                        },
-                data: vm.formData,
-            }).then(
-
-                function (response) {
-                    //success
-                    vm.formservice.output_model_Data.dt_regression = response.data;
-                    if(response.status == 200){
-
-                        vm.excecuteAlgorithm(API);
-                    }
-                }, 
-
-                function (error) {
-                    //error
-                    vm.formservice.output_model_Data.dt_regression_error = error;
-
-                    vm.excecuteAlgorithm(API);
-                }
-            );
-        };
-
-        vm.builtRFRegression = function(API, Algorithm){
-
-            $http({
-                method : "POST",
-                url : API,
-                headers: {
-                            'Content-Type': undefined,
-                            'algorithm': Algorithm,
-                        },
-                data: vm.formData,
-            }).then(
-
-                function (response) {
-                    //success
-                    vm.formservice.output_model_Data.rf_regression = response.data;
-
-                    if(response.status == 200){
-
-                        vm.excecuteAlgorithm(API);
-                    }
-                }, 
-
-                function (error) {
-                    //error
-                    vm.formservice.output_model_Data.rf_regression_error = error;
-
-                    vm.excecuteAlgorithm(API);
-                }
-            );
-        };
-
-        vm.builtXGBRegression = function(API, Algorithm){
-
-            $http({
-                method : "POST",
-                url : API,
-                headers: {
-                            'Content-Type': undefined,
-                            'algorithm': Algorithm,
-                        },
-                data: vm.formData,
-            }).then(
-
-                function (response) {
-                    //success
-                    vm.formservice.output_model_Data.xgb_regression = response.data;
-
-                    if(response.status == 200){
-
-                        vm.excecuteAlgorithm(API);
-                    }
-                }, 
-
-                function (error) {
-                    //error
-                    vm.formservice.output_model_Data.xgb_regression_error = error;
-
-                    vm.excecuteAlgorithm(API);
-                }
-            );
-        };
 
     }
 ]);

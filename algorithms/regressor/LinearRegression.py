@@ -10,14 +10,15 @@ class LinearRegressionClass:
     
     output = {}
 
-    def build(self, project_tag, X, Y, train_x, test_x, train_y, test_y, cv=5, scoring=None):
+    def build(self, project_tag, algorithm_slug, X, Y, train_x, test_x, train_y, test_y, cv=5, scoring=None):
         
         cv = int(cv)
         
         model = LinearRegression()
         model.fit(train_x,train_y)
 
-        filename = 'algorithms/all_fitted_models/'+ project_tag +'/linear_regression.sav'
+        filename = 'algorithms/all_fitted_models/' + project_tag + '/' + algorithm_slug + '.sav'
+
         joblib.dump(model, filename)
 
         cv_r2 = cross_val_score(model, X, Y, scoring=scoring, cv=cv) 

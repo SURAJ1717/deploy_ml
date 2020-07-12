@@ -11,7 +11,7 @@ class LassoRegressionClass:
     
     output = {}
 
-    def build(self, project_tag, X, Y, train_x, test_x, train_y, test_y, params, cv=5, scoring=None, search_method='grid', n_iter=20):
+    def build(self, project_tag, algorithm_slug, X, Y, train_x, test_x, train_y, test_y, params, cv=5, scoring=None, search_method='grid', n_iter=20):
         
         cv = int(cv)
 
@@ -28,7 +28,7 @@ class LassoRegressionClass:
             lasso_regressor = RandomizedSearchCV(estimator=model, param_distributions=params, scoring=scoring, cv=cv, n_iter=n_iter, random_state=0, n_jobs=-1)
             lasso_regressor.fit(train_x,train_y)
         
-        filename = 'algorithms/all_fitted_models/'+ project_tag +'/lasso_regression.sav'
+        filename = 'algorithms/all_fitted_models/' + project_tag + '/' + algorithm_slug + '.sav'
         joblib.dump(lasso_regressor, filename)
 
         LassoRegressionClass.output['best_params'] = lasso_regressor.best_params_

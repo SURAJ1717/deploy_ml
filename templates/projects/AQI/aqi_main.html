@@ -2,7 +2,7 @@
 
 {% block body %}
 
-<div class="block-body"  ng-controller="FormController as form">
+<div class="block-body" ng-controller="FormController as form">
 
     <section>
         <div class="container-fluid">
@@ -16,13 +16,15 @@
 
                             <button type="button" class="btn btn-sm btn-outline-success float-right"
                                 ng-if="model_present == 'False'">
-                                <i class="fas fa-cloud-download-alt mx-2"></i>  Download CSV
+                                <i class="fas fa-cloud-download-alt mx-2"></i> Download CSV
                             </button>
 
-                            <button type="button" ng-disabled="form.formservice.processing" class="btn btn-sm btn-outline-danger float-right mx-2"
-                                ng-if="model_present == 'True'" ng-click="form.formservice.clear_integrated_model('/clear_integrated_model', 'aqi')">
+                            <button type="button" ng-disabled="form.formservice.processing"
+                                class="btn btn-sm btn-outline-danger float-right mx-2" ng-if="model_present == 'True'"
+                                ng-click="form.formservice.clear_integrated_model('/clear_integrated_model', 'aqi')">
                                 <span ng-if="!form.formservice.processing">Remove Build Model</span>
-                                <span ng-if="form.formservice.processing">Removing..<i class="fas fa-spinner fa-spin"></i></span>
+                                <span ng-if="form.formservice.processing">Removing..<i
+                                        class="fas fa-spinner fa-spin"></i></span>
                             </button>
                         </div>
 
@@ -43,20 +45,19 @@
 
                         <!-- Next, Back & submit button -->
                         <span class="form-buttons m-4" ng-class="{'d-none': model_present == 'True'}">
+
                             <button type="button" class="btn btn-sm btn-outline-dark float-right px-5"
-                                ng-class="{'d-none': step == 'two'}"
-                                ng-click="step='two'; form.formservice.selected_algo()">
+                                ng-class="{'d-none': step == 'two'}" ng-click="step='two'">
                                 Next
                             </button>
 
                             <button type="button" class="btn btn-sm btn-outline-dark px-5"
-                                ng-class="{'d-none': step == 'one'}" ng-click="step='one'; form.formservice.reset_algos();">
+                                ng-class="{'d-none': step == 'one'}" ng-click="step='one'">
                                 Back
                             </button>
 
                             <button type="submit" class="btn btn-sm btn-outline-success float-right px-5"
-                                ng-class="{'d-none': step == 'one'}"
-                                ng-click="form.buildModel('/aqi', 'aqi')">
+                                ng-class="{'d-none': step == 'one'}" ng-click="form.buildModel('/aqi', 'aqi')">
                                 Submit
                             </button>
                         </span>

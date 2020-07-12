@@ -4,39 +4,9 @@
     <form enctype="multipart/form-data" ng-submit="form.formservice.predictResult('/aqi_predict', inputData)">
         <div class="row">
             <div class="col-6" ng-repeat="item in input_features">
-                <div class="form-group" ng-if="item == 'Avg_temp'">
-                    <label>Average Temperature</label>
-                    <input type="number" class="form-control" id="item" ng-model="inputData.Avg_temp" required>
-                </div>
-
-                <div class="form-group" ng-if="item == 'Max_temp'">
-                    <label>Maximum Temperature</label>
-                    <input type="number" class="form-control" id="item" ng-model="inputData.Max_temp" required>
-                </div>
-
-                <div class="form-group" ng-if="item == 'Min_temp'">
-                    <label>Minimun Temperature</label>
-                    <input type="number" class="form-control" id="item" ng-model="inputData.Min_temp" required>
-                </div>
-
-                <div class="form-group" ng-if="item == 'Avg_humidity'">
-                    <label>Average Humidity</label>
-                    <input type="number" class="form-control" id="item" ng-model="inputData.Avg_humidity" required>
-                </div>
-
-                <div class="form-group" ng-if="item == 'Avg_visibility'">
-                    <label>Average Visibility</label>
-                    <input type="number" class="form-control" id="item" ng-model="inputData.Avg_visibility" required>
-                </div>
-
-                <div class="form-group" ng-if="item == 'Avg_wind_speed'">
-                    <label>Average Wind Speed</label>
-                    <input type="number" class="form-control" id="item" ng-model="inputData.Avg_wind_speed" required>
-                </div>
-
-                <div class="form-group" ng-if="item == 'Max_sustained_wind_speed'">
-                    <label>Max Sustained Wind Speed</label>
-                    <input type="number" class="form-control" id="item" ng-model="inputData.Max_sustained_wind_speed" required>
+                <div class="form-group">
+                    <label>[[item.split('_').join(' ')]]</label>
+                    <input type="number" class="form-control" id="[[item]]" ng-model="inputData[item]" required>
                 </div>
             </div>
             
