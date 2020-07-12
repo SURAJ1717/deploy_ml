@@ -10,7 +10,7 @@ class RidgeRegressionClass:
     
     output = {}
 
-    def build(self, project_tag, X, Y, train_x, test_x, train_y, test_y, params, cv=5, scoring=None, search_method='grid', n_iter=20):
+    def build(self, project_tag, algorithm_slug, X, Y, train_x, test_x, train_y, test_y, params, cv=5, scoring=None, search_method='grid', n_iter=20):
         
         cv = int(cv)
         
@@ -27,7 +27,8 @@ class RidgeRegressionClass:
             ridge_regressor = RandomizedSearchCV(estimator=model, param_distributions=params, scoring=scoring, cv=cv, n_iter=n_iter, random_state=0, n_jobs=-1)
             ridge_regressor.fit(train_x,train_y)
 
-        filename = 'algorithms/all_fitted_models/'+ project_tag +'/ridge_regression.sav'
+        filename = 'algorithms/all_fitted_models/' + project_tag + '/' + algorithm_slug + '.sav'
+
         joblib.dump(ridge_regressor, filename)
 
         RidgeRegressionClass.output['best_params'] = ridge_regressor.best_params_

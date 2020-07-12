@@ -16,8 +16,8 @@
         <br>
         <div class="row">
             <div class="col-4 mt-2" ng-repeat="item in form.formservice.formData.algorithms">
-                <input type="checkbox" class="mx-2" ng-model="item.added">
-                <small>[[ item.name ]]</small><br>
+                <input type="checkbox" class="mx-2" id="[[item.slug]]" ng-model="item.added">
+                <label for="[[item.slug]]" style="cursor: pointer;">[[ item.name ]]</label><br>
             </div>
         </div>
     </div>
@@ -25,12 +25,14 @@
     <div class="form-group col-6 mb-5">
         <small><b>Cross validation </b></small>
         <input type="number" class="form-control" id="cv" placeholder="default 10"
+            ng-init="form.formservice.formData.cv=form.formservice.default_formData.cv"
             ng-model="form.formservice.formData.cv">
     </div>
 
     <div class="form-group col-6 mb-5">
         <small><b>Scoring</b></small>
         <input type="text" class="form-control" id="scoring" placeholder="default 'neg_mean_squared_error'"
+            ng-init="form.formservice.formData.scoring=form.formservice.default_formData.scoring"
             ng-model="form.formservice.formData.scoring">
     </div>
 
@@ -39,7 +41,9 @@
         <div class="input-group">
             <div class="input-group-prepend">
                 <div class="input-group-text">
-                    <input type="checkbox" id="skip_first" ng-model="form.formservice.formData.skip_first">
+                    <input type="checkbox" id="skip_first" 
+                        ng-init="form.formservice.formData.skip_first=form.formservice.default_formData.skip_first"
+                        ng-model="form.formservice.formData.skip_first">
                 </div>
             </div>
             <input type="text" class="form-control bg-white" value="Skip first Row(for Date)" disabled>
@@ -51,7 +55,9 @@
         <div class="input-group">
             <div class="input-group-prepend">
                 <div class="input-group-text">
-                    <input type="checkbox" id="correlation" ng-model="form.formservice.formData.correlation">
+                    <input type="checkbox" id="correlation" 
+                        ng-init="form.formservice.formData.correlation=form.formservice.default_formData.correlation"
+                        ng-model="form.formservice.formData.correlation">
                 </div>
             </div>
             <input type="text" class="form-control bg-white" value="Remove less correlated features" disabled>
@@ -61,14 +67,15 @@
     <div class="form-group col-4 mb-5">
         <small><b>Top Important features</b></small>
         <input type="number" class="form-control" id="top_imp_features" placeholder="default All"
+            ng-init="form.formservice.formData.top_imp_features=form.formservice.default_formData.top_imp_features"
             ng-model="form.formservice.formData.top_imp_features">
     </div>
 
     <div class="form-group col-12 mb-5">
         <small><b>Search Method</b></small>
         <select id="search_type" placeholder="select" class="form-control" name="search_type"
+            ng-init="form.formservice.formData.search_type=form.formservice.default_formData.search_type"
             ng-model="form.formservice.formData.search_type">
-            <option value="">Select (Default-Grid)</option>
             <option value="grid">Grid-Search CV</option>
             <option value="rand">Randomized-Search CV</option>
         </select>
@@ -77,12 +84,14 @@
     <div class="form-group col-6 mb-5" ng-if="form.formservice.formData.search_type == 'rand'">
         <small><b>RSCV iterations</b></small>
         <input type="number" class="form-control" id="n_iter" placeholder="default 100"
+            ng-init="form.formservice.formData.n_iter=form.formservice.default_formData.n_iter"
             ng-model="form.formservice.formData.n_iter">
     </div>
 
     <div class="form-group col-6 mb-5" ng-if="form.formservice.formData.search_type == 'rand'">
         <small><b>RSCV Randon State</b></small>
         <input type="number" class="form-control" id="random_state" placeholder="default None"
+            ng-init="form.formservice.formData.random_state=form.formservice.default_formData.random_state"
             ng-model="form.formservice.formData.random_state">
     </div>
 

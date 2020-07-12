@@ -44,7 +44,7 @@ class AQI:
             data['model_present'] = True
             data['build_model'] = {}
 
-            query = {"project": 'aqi'}
+            query = {"project_tag": 'aqi'}
             result = AQI.table.find_one(query)
 
             data['build_model'] = result
@@ -59,7 +59,7 @@ class AQI:
 
         formData = request.form
 
-        query = {"project": 'aqi'}
+        query = {"project_tag": 'aqi'}
         query_result = AQI.table.find_one(query)
 
         if query_result is None:
@@ -72,7 +72,7 @@ class AQI:
 
         final_features = [numpy.array(input_x)]
 
-        filename = 'algorithms/all_fitted_models/aqi/'+ query_result['model_name'] +'.sav'
+        filename = 'algorithms/all_fitted_models/'+ query_result['project_tag'] +'/'+ query_result['model_slug'] +'.sav'
         loaded_model = joblib.load(filename)
 
         try:

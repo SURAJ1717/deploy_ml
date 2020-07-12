@@ -14,36 +14,38 @@ class Model:
 
     def model_integrate(self, formData):
 
-        project = formData.get('project')
+        project_tag = formData.get('project_tag')
         features = formData.get('features')
         model_name = formData.get('model_name')
+        model_slug = formData.get('model_slug')
 
-        features_list = list(features.split(",")) 
+        features_list = json.loads(features)
 
         records = {
             '_id': uuid.uuid4().hex,
-            'project': project,
+            'project_tag': project_tag,
             'features': features_list,
             'model_name': model_name,
+            'model_slug': model_slug,
         }
 
-        query = {"project": project}
+        query = {"project_tag": project_tag}
         result = Model.table.find_one(query)
 
         if result is None:
 
             Model.table.insert_one(records)
         else:
-            new_values = { "$set": { 'features': features, 'model_name': model_name} }
+            new_values = { "$set": { 'model_slug': model_slug, 'model_name': model_name} }
 
             Model.table.update_one(query, new_values)
 
 
     def clear_integrated_model(self, formData):
 
-        project_tag = formData.get('project')
+        project_tag = formData.get('project_tag')
 
-        query = {"project": project_tag}
+        query = {"project_tag": project_tag}
         result = Model.table.find_one(query)
 
         if result is None:
