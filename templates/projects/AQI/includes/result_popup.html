@@ -36,7 +36,7 @@
         </div>
 
 
-        <div class="card-body" ng-if="op_type">
+        <div class="card-body" ng-if="op_type" ng-controller="ChartController as chart">
             <div class="row" ng-repeat="(key, item) in form.formservice.formData.algorithms" ng-if="item.current_tab">
 
                 <!-- loader gif -->
@@ -90,53 +90,30 @@
                             </div>
                         </div>
 
-                        <!-- 
-                            //for linear algo
-                        <div class="col-md-4 col-sm-12 mt-2">
-                            <div class="alert alert-success bg-white text-success" role="alert">
-                                <strong class="h6">Mean cross validation R-Sq: </strong>
-                                <span class="mx-2"
-                                    ng-bind="round_int(form.formservice.output_model_Data.linear_regression.linear_regressor_output.mean_cv_r2, 2)"></span>
-                            </div>
+                        <!-- Line Chart -->
+                        <div class="col-12" ng-if="item.slug == 'linear_regressor'" ng-init="chart.getLineChart(item)">
+                            <div id="linear_regressor" items="limitedIdeas"></div>
                         </div>
 
-                        <div class="col-md-4 col-sm-12 mt-2">
-                            <div class="alert alert-success bg-white text-success" role="alert">
-                                <strong class="h6">R-Sq for train data</strong>
-                                <span class="mx-2"
-                                    ng-bind="round_int(form.formservice.output_model_Data.linear_regression.linear_regressor_output.R_Sq_train, 4)"></span>
-                            </div>
+                        <div class="col-12" ng-if="item.slug == 'ridge_regressor'" ng-init="chart.getLineChart(item)">
+                            <div id="ridge_regressor" items="limitedIdeas"></div>
                         </div>
-
-                        <div class="col-md-4 col-sm-12 mt-2">
-                            <div class="alert alert-success bg-white text-success" role="alert">
-                                <strong class="h6">R-Sq for test data</strong>
-                                <span class="mx-2"
-                                    ng-bind="round_int(form.formservice.output_model_Data.linear_regression.linear_regressor_output.R_Sq_test, 4)"></span>
-                            </div>
-                        </div>
-
-                        //for rest algo
-                        <div class="col-md-4 col-sm-12 mt-2">
-                            <div class="alert alert-success bg-white text-success" role="alert">
-                                <strong class="h6">Best Score: </strong>
-                                <span class="mx-2"
-                                    ng-bind="round_int(form.formservice.output_model_Data.lasso_regression.lasso_regressor_output.best_score, 2)"></span>
-                            </div>
-                        </div>
-                                            
-                        <h5 class="text-info mb-3">Best Hyper Parameters</h5>
-                        <div class="row">
-                            <div class="col-3 my-2"
-                                ng-repeat="(key, value) in form.formservice.output_model_Data.dt_regression.dt_regressor_output.best_params">
-                                <button type="button" class="btn btn-outline-info w-100 text-left small">
-                                    [[key]] <span
-                                        class="badge badge-light text-info float-right border border-info mt-1">[[value]]</span>
-                                </button>
-                            </div>
-                        </div>
-                        -->
                         
+                        <div class="col-12" ng-if="item.slug == 'lasso_regressor'" ng-init="chart.getLineChart(item)">
+                            <div id="lasso_regressor" items="limitedIdeas"></div>
+                        </div>
+                        
+                        <div class="col-12" ng-if="item.slug == 'dt_regressor'" ng-init="chart.getLineChart(item)">
+                            <div id="dt_regressor" items="limitedIdeas"></div>
+                        </div>
+                        
+                        <div class="col-12" ng-if="item.slug == 'rf_regressor'" ng-init="chart.getLineChart(item)">
+                            <div id="rf_regressor" items="limitedIdeas"></div>
+                        </div>
+                        
+                        <div class="col-12" ng-if="item.slug == 'xgb_regressor'" ng-init="chart.getLineChart(item)">
+                            <div id="xgb_regressor" items="limitedIdeas"></div>
+                        </div>
                     </div>
                 </div>
             </div>
