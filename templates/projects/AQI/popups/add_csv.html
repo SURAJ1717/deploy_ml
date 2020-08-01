@@ -1,0 +1,36 @@
+<div ng-controller="AppController" class="mt-4">
+    <div class="card" ng-init="formData={}">
+        <div class="card-header text-center bg-white">
+            Upload CSV
+        </div>
+        <div class="card-body">
+            <form ng-submit="postForm('/projects/aqi/csv-upload', formData)">
+                <div class="row">
+                    <div class="col-12">
+                        <div class="form-group">
+                            <label class="h6" for="project_tag">Project tag</label>
+                            <input type="text" class="form-control" id="project_tag" ng-model="formData.project_tag">
+                        </div>
+                    </div>
+
+                    <div class="col-12">
+                        <div class="form-group mb-5">
+                            <small><b>Please Upload CSV</b></small>
+                            <input class="form-control" type="file" id="file1" name="file" multiple
+                                ng-files="formData.csv = getSingleFiles($files)">
+                            </div>
+                    </div>
+                    
+                    <div class="col-12 mt-4 text-center">
+                        <button ng-disabled="processing" class="btn btn-sm btn-outline-primary">
+                            <span ng-if="!processing"> Add </span>
+                            <span ng-if="processing">Please Wait.. <i class="fas fa-spinner fa-spin"></i></span>
+                        </button>
+
+                        <button ng-click="closeThisDialog()" class="btn btn-sm btn-outline-danger">Cancel</button>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>

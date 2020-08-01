@@ -109,6 +109,40 @@ app.controller('AppController', ['$scope', '$http', 'ngDialog', function ($scope
         }
     }
 
+    $scope.getSingleFiles = function ($files) {
+
+        return $files[0];
+    };
+
+    $scope.download = function(filename){
+
+        $scope.processing = true;
+
+        var url = $scope.base_url + '/download_file/' + filename;
+              
+        $http({
+            method : "GET",
+            url : url,
+            headers:{
+                        'Content-Type': undefined,
+                    },
+            data: {},
+        }).then(
+
+            function (response) {
+                
+                aap_con.handleFormResponse(response.data);
+                $scope.processing = false;
+            }, 
+
+            function (error) {
+
+                aap_con.handleFormResponse(error.data);
+                $scope.processing = false;
+            }
+        );
+    }
+
 }]);
 
 app.filter('to_trusted', ['$sce', function($sce){
@@ -129,4 +163,4 @@ app.directive("ngFiles",  ['$parse', function ($parse) {
     return {
         link: fn_link
     }
-} ]);
+}]);
