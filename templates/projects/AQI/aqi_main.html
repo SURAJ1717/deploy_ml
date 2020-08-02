@@ -8,16 +8,31 @@
         <div class="container-fluid">
             <div class="row my-5">
                 <div class="offset-md-2 col-md-8 col-sm-12">
-                    <div class="card" ng-init="step='one'; model_present='{{ data.model_present }}'" ng-cloak>
+                    <div class="card" ng-init="step='one'; project_csv={{ data.project_csv }} ; model_present='{{ data.model_present }}'" ng-cloak>
 
                         <!-- Form header -->
                         <div class="card-header bg-white text-danger">
                             <b>Air Quality Index</b>
 
-                            <button type="button" class="btn btn-sm btn-outline-success float-right"
-                                ng-if="model_present == 'False'">
-                                <i class="fas fa-cloud-download-alt mx-2"></i> Download CSV
-                            </button>
+                            <span ng-if="model_present == 'False'">
+                                <button type="button" class="btn btn-sm btn-outline-info float-right"
+                                    ng-if="!project_csv" ng-click="openPopup('/projects/AQI/popups/add_csv.html')">
+                                    <i class="fas fa-cloud-upload-alt mx-2"></i> Upload CSV
+                                </button>
+
+                                <button type="button" ng-disabled="processing" class="btn btn-sm btn-outline-warning float-right mx-2"
+                                    ng-if="project_csv" ng-click="postForm('/projects/aqi/csv-delete')">
+                                    <span ng-if="!processing">Reset</span>
+                                    <span ng-if="processing"><i class="fas fa-spinner fa-spin"></i> Please wait..</span>
+                                </button>  
+
+                                <button type="button" ng-disabled="processing" class="btn btn-sm btn-outline-success float-right"
+                                    ng-if="project_csv" ng-click="download(project_csv.csv)">
+                                    <span ng-if="!processing"><i class="fas fa-cloud-download-alt mx-2"></i> Download CSV</span>
+                                    <span ng-if="processing"><i class="fas fa-spinner fa-spin"></i> Downloading..</span>
+                                </button>    
+                            </span>
+                            
 
                             <button type="button" ng-disabled="form.formservice.processing"
                                 class="btn btn-sm btn-outline-danger float-right mx-2" ng-if="model_present == 'True'"

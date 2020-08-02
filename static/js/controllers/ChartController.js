@@ -24,15 +24,12 @@ function ($scope, $http, ngDialog, formService) {
         Highcharts.chart( algorithm.slug , {
 
             chart: {
-                type: 'line',
+                type: 'spline',
                 zoomType: 'x'
             },
             title: {
                 text: 'Difference between Actual and Predicted Values'
             },
-            // subtitle: {
-            //     text: 'Source: WorldClimate.com'
-            // },
             xAxis: {
                 categories: diff_round,
                 title: {
@@ -52,6 +49,7 @@ function ($scope, $http, ngDialog, formService) {
                     enableMouseTracking: false
                 }
             },
+            colors: ['#0000ff', '#ff0000'],
             series: [{
                 name: 'Predicted',
                 data: predicted_val

@@ -22,3 +22,23 @@ def predict_AQI():
 def open_model_built_Popup():
 
     return render_template('projects/AQI/includes/result_popup.html')
+
+
+@model_aqi.route('/projects/AQI/popups/add_csv.html', methods=['GET'])
+def open_upload_csv_Popup():
+
+    return render_template('projects/AQI/popups/add_csv.html')
+
+
+@model_aqi.route('/projects/aqi/csv-upload', methods=['POST'])
+def upload_csv():
+
+    aqi = AQI()
+    return aqi.upload_csv()
+
+
+@model_aqi.route('/projects/aqi/csv-delete', methods=['POST'])
+def delete_csv():
+
+    aqi = AQI()
+    return aqi.delete_csv()
