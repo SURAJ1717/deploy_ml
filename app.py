@@ -15,6 +15,9 @@ app.register_blueprint(model_app)
 from models.aqi.routes_aqi import model_aqi
 app.register_blueprint(model_aqi)
 
+from models.cpp.routes_cpp import model_cpp
+app.register_blueprint(model_cpp)
+
 from models.seeder.routes_seed import seed_app
 app.register_blueprint(seed_app)
 

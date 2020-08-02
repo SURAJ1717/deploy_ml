@@ -1,0 +1,29 @@
+
+<!-- Result prediction form -->
+<span ng-if="model_present == 'True'" ng-init="input_features={{data.build_model.features}}; inputData={}">
+    <form enctype="multipart/form-data" ng-submit="form.formservice.predictResult('/cpp_predict', inputData)">
+        <div class="row">
+            <div class="col-6" ng-repeat="item in input_features">
+                <div class="form-group">
+                    <label>[[item.split('_').join(' ')]]</label>
+                    <input type="number" class="form-control" id="[[item]]" ng-model="inputData[item]" required>
+                </div>
+            </div>
+            
+            <div class="col-12 mt-3">
+                <button type="submit" ng-disabled="form.formservice.processing" class="btn btn-outline-info btn-sm">
+                    <span ng-if="!form.formservice.processing">Predict</span>
+                    <span ng-if="form.formservice.processing">Please Wait..<i class="fas fa-spinner fa-spin"></i></span>
+                </button>
+            </div>
+
+            <div class="col-12 mt-3 text-center" ng-if="form.formservice.prediction_result.output">
+                <span class="btn btn-sm btn-outline-success"><strong class="px-2" >Predicted Output:</strong> [[form.formservice.prediction_result.output]]</span>
+            </div>
+
+            <div class="col-12 mt-3 text-center" ng-if="form.formservice.prediction_result.error">
+                <span class="btn btn-sm btn-outline-danger" ng-bind-html="form.formservice.prediction_result.error.data | to_trusted"></span>
+            </div>
+        </div>
+    </form>
+</span>

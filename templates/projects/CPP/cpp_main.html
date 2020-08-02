@@ -12,16 +12,16 @@
 
                         <!-- Form header -->
                         <div class="card-header bg-white text-danger">
-                            <b>Air Quality Index</b>
+                            <b>Car Price Prediction</b>
 
                             <span ng-if="model_present == 'False'">
                                 <button type="button" class="btn btn-sm btn-outline-info float-right"
-                                    ng-if="!project_csv" ng-click="openPopup('/projects/AQI/popups/add_csv.html')">
+                                    ng-if="!project_csv" ng-click="openPopup('/projects/CPP/popups/add_csv.html')">
                                     <i class="fas fa-cloud-upload-alt mx-2"></i> Upload CSV
                                 </button>
 
                                 <button type="button" ng-disabled="processing" class="btn btn-sm btn-outline-warning float-right mx-2"
-                                    ng-if="project_csv" ng-click="postForm('/projects/aqi/csv-delete')">
+                                    ng-if="project_csv" ng-click="postForm('/projects/cpp/csv-delete')">
                                     <span ng-if="!processing">Reset</span>
                                     <span ng-if="processing"><i class="fas fa-spinner fa-spin"></i> Please wait..</span>
                                 </button>  
@@ -35,7 +35,7 @@
 
                             <button type="button" ng-disabled="form.formservice.processing"
                                 class="btn btn-sm btn-outline-danger float-right mx-2" ng-if="model_present == 'True'"
-                                ng-click="form.formservice.clear_integrated_model('/clear_integrated_model', 'aqi')">
+                                ng-click="form.formservice.clear_integrated_model('/clear_integrated_model', 'cpp')">
                                 <span ng-if="!form.formservice.processing">Remove Build Model</span>
                                 <span ng-if="form.formservice.processing">Removing..<i
                                         class="fas fa-spinner fa-spin"></i></span>
@@ -44,17 +44,17 @@
 
                         <!-- Include form body for Model Prediction Result -->
                         <div class="card-body" ng-if="model_present == 'True'">
-                            {% include "/projects/AQI/includes/model_prediction.html" %}
+                            {% include "/projects/CPP/includes/model_prediction.html" %}
                         </div>
 
                         <!-- Include form body for Normal inputs -->
                         <div class="card-body" ng-if="model_present == 'False' && step == 'one'">
-                            {% include "/projects/AQI/includes/alogrithms_inputs.html" %}
+                            {% include "/projects/CPP/includes/alogrithms_inputs.html" %}
                         </div>
 
                         <!-- Include form body for Hyper-Parameteric inputs -->
                         <div class="card-body" ng-if="model_present == 'False' && step == 'two'">
-                            {% include "/projects/AQI/includes/algorithms_hyper_inputs.html" %}
+                            {% include "/projects/CPP/includes/algorithms_hyper_inputs.html" %}
                         </div>
 
                         <!-- Next, Back & submit button -->
@@ -71,7 +71,7 @@
                             </button>
 
                             <button type="submit" class="btn btn-sm btn-outline-success float-right px-5"
-                                ng-class="{'d-none': step == 'one'}" ng-click="form.buildModel('/aqi', 'aqi')">
+                                ng-class="{'d-none': step == 'one'}" ng-click="form.buildModel('/cpp', 'cpp')">
                                 Submit
                             </button>
                         </span>
