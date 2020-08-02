@@ -1,0 +1,58 @@
+<ul class="nav border-bottom small">
+    <span ng-repeat="(key, item) in form.formservice.formData.algorithms">
+        <li class="nav-item" ng-if="item.added" ng-click="form.formservice.openTab(item)">
+            <a class="nav-link text-secondary" ng-class="{'text-info border-bottom border-info': item.current_tab }"
+                href="">
+                [[ item.short_name ]]
+            </a>
+        </li>
+    </span>
+</ul>
+
+<div class="row my-4">
+
+    <div class="col-12" ng-repeat="(key, item) in form.formservice.formData.algorithms"
+        ng-if="item.added && item.current_tab">
+
+        <h4>[[item.name]]</h4>
+       
+        <div class="row mt-3" ng-init="parameter={};">
+            <div class="col-12" ng-if="item.hyper_params.length == 0">
+                <div class="alert alert-danger text-center w-100 mt-5">
+                    Hyper Parameter tuning feature is <strong>not available</strong> for this model
+                </div>
+            </div>
+
+            <div class="w-100 d-flex mt-3" ng-if="item.hyper_params.length > 0" ng-repeat="(key, param) in item.hyper_params">
+                <div class="col-6 mb-4">
+                    <div class="input-group">
+                        <input type="text" class="form-control" placeholder="[[param.name]]" ng-model="parameter[key]">
+
+                        <div class="input-group-append" ng-init="param.custom_para=[];">
+                            <button class="btn btn-dark" type="button"
+                                ng-click="param.custom_para.push(parameter[key]); parameter[key]=''">
+                                Add 
+                            </button>
+                        </div>
+                    </div>
+                    
+                    <p class="p-1 ml-3 mt-2 badge badge-dark font-weight-light"
+                        ng-if="param.custom_para.length != 0">
+
+                        <span ng-repeat="cus_para in param.custom_para">[[cus_para]], </span>
+                        
+                        <i class="fa fa-times px-3" style="cursor: pointer;"
+                            ng-click="param.custom_para=[]"></i>
+                    </p>
+                </div>
+
+                <div class="col-6 mb-4">
+                    <p class="text-secondary small">
+                        <strong>Default: </strong> 
+                        <span ng-repeat="each_para in param.params">[[each_para]], </span></p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+</div>

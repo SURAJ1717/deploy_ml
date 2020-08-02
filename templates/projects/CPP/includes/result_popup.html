@@ -1,0 +1,156 @@
+<div class="row my-5 mx-2" ng-controller="FormController as form">
+    <div class="card w-100 c-mh">
+
+        <div class="card-header bg-white" ng-init="op_type='true'">
+            <ul class="nav small d-inline-flex">
+                <span ng-repeat="(key, item) in form.formservice.formData.algorithms">
+                    <li class="nav-item mw-135 my-auto p-2 m-1 left-border n-hover"
+                        ng-click="form.formservice.openTab(item)"
+                        ng-class="{'result-tab-active': item.current_tab}">
+
+                        <a class="nav-link text-secondary" style="display: contents;" href=""
+                            ng-class="{'text-success': item.current_tab}">
+                            [[ item.short_name ]]
+                        </a>
+
+                        <i class="far fa-check-circle float-right text-success mt-1"
+                            ng-if="item.success"></i>
+
+                        <i class="fas fa-exclamation-triangle text-danger float-right mt-1"
+                            ng-if="item.error"></i>
+
+                        <i ng-if="!item.success && !item.error"
+                            class="fas fa-spinner fa-spin float-right mt-1"></i>
+                    </li>
+                </span>
+            </ul>
+
+            <a class="text-danger float-right mt-2" href="/cpp">
+                <i class="fas fa-times-circle"></i>
+            </a>
+
+            <a class="btn btn-sm btn-outline-success float-right mt-1 mx-4" ng-click="op_type=!op_type" href="">
+                <i class="fas fa-font" ng-if="op_type"></i>
+                <i class="fas fa-times-circle" ng-if="!op_type"></i>
+            </a>
+        </div>
+
+
+        <div class="card-body" ng-if="op_type" ng-controller="ChartController as chart">
+            <div class="row" ng-repeat="(key, item) in form.formservice.formData.algorithms" ng-if="item.current_tab">
+
+                <!-- loader gif -->
+                <div class="col-12 text-center py-5"
+                    ng-if="!item.success && !item.error">
+                    <img src="{{ url_for('static', filename = 'img/loading.gif') }}" alt="loader Image"
+                        class="col-1 py-5 my-5">
+                </div>
+
+                <!-- error message -->
+                <div class="col-12 text-center py-5" ng-if="item.error">
+                    <div class="alert alert-danger w-100 text-center my-5">
+                        <p class="error_response"
+                            ng-bind-html='item.error.data | to_trusted'>
+                        </p>
+                    </div>
+                </div>
+
+                <!-- output result -->
+                <div class="col-12" ng-if="item.success">
+                    <div class="row">
+                        <div class="col-md-4 col-sm-12 mt-2">
+                            <div class="alert alert-success bg-white text-success" role="alert">
+                                <strong class="h6">Mean Absolute Error: </strong>
+                                <span class="mx-2"
+                                    ng-bind="round_int(item.success.output.MAE, 2)"></span>
+                            </div>
+                        </div>
+
+                        <div class="col-md-4 col-sm-12 mt-2">
+                            <div class="alert alert-success bg-white text-success" role="alert">
+                                <strong class="h6">Mean Square Error: </strong>
+                                <span class="mx-2"
+                                    ng-bind="round_int(item.success.output.MSE, 2)"></span>
+                            </div>
+                        </div>
+
+                        <div class="col-md-4 col-sm-12 mt-2">
+                            <div class="alert alert-success bg-white text-success" role="alert">
+                                <strong class="h6">Root Mean Square Error: </strong>
+                                <span class="mx-2"
+                                    ng-bind="round_int(item.success.output.RMSE, 2)"></span>
+                            </div>
+                        </div>
+
+                        <div class="col-md-4 col-sm-12 mt-2" ng-if="item.success.output.best_score">
+                            <div class="alert alert-success bg-white text-success" role="alert">
+                                <strong class="h6">Best Score: </strong>
+                                <span class="mx-2"
+                                    ng-bind="round_int(item.success.output.best_score, 2)"></span>
+                            </div>
+                        </div>
+
+                        <!-- Line Chart -->
+                        <div class="col-12" ng-if="item.slug == 'linear_regressor'" ng-init="chart.getLineChart(item)">
+                            <div id="linear_regressor" items="limitedIdeas"></div>
+                        </div>
+
+                        <div class="col-12" ng-if="item.slug == 'ridge_regressor'" ng-init="chart.getLineChart(item)">
+                            <div id="ridge_regressor" items="limitedIdeas"></div>
+                        </div>
+                        
+                        <div class="col-12" ng-if="item.slug == 'lasso_regressor'" ng-init="chart.getLineChart(item)">
+                            <div id="lasso_regressor" items="limitedIdeas"></div>
+                        </div>
+                        
+                        <div class="col-12" ng-if="item.slug == 'dt_regressor'" ng-init="chart.getLineChart(item)">
+                            <div id="dt_regressor" items="limitedIdeas"></div>
+                        </div>
+                        
+                        <div class="col-12" ng-if="item.slug == 'rf_regressor'" ng-init="chart.getLineChart(item)">
+                            <div id="rf_regressor" items="limitedIdeas"></div>
+                        </div>
+                        
+                        <div class="col-12" ng-if="item.slug == 'xgb_regressor'" ng-init="chart.getLineChart(item)">
+                            <div id="xgb_regressor" items="limitedIdeas"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+
+        <div class="card-body" ng-if="!op_type">
+            <table class="table table-bordered mt-3">
+                <tbody>
+                    <tr ng-repeat="item in form.formservice.formData.algorithms">
+                        <th scope="row">[[item.short_name]]</th>
+
+                        <td>
+                            <button ng-disabled="form.formservice.processing" class="btn btn-sm btn-outline-info"
+                                ng-click="form.formservice.integrate_model('/model_integrate', 'cpp', item )">
+                                <i ng-if="!form.formservice.processing" class="fas fa-cloud-download-alt"></i>
+                                <i ng-if="form.formservice.processing" class="fas fa-spinner fa-spin"></i>
+                            </button>
+                        </td>
+
+                        <td ng-repeat="(key, output) in item.success.output" ng-if="key=='MAE' || key=='MSE' || key=='RMSE' || key=='best_score'">
+                            <small class="text-danger">[[key]] : </small>
+                            <small class="mx-2" ng-bind="round_int(output, 2)"></small>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <div class="text-center" ng-if="form.formservice.integrate_model_output">
+                <span ng-if="form.formservice.integrate_model_output.success" class="alert alert-success">
+                    Model Selected Successfully
+                </span>
+
+                <span ng-if="form.formservice.integrate_model_output.error" class="alert alert-danger"
+                    ng-bind-html="form.formservice.integrate_model_output.error.data | to_trusted"></span>
+            </div>
+
+        </div>
+    </div>
+</div>

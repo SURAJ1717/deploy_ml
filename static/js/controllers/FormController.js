@@ -17,7 +17,7 @@ app.controller('FormController', ['$scope', 'formService', '$http', 'ngDialog',
 
             var API = $scope.base_url + path;
 
-            vm.openProcessingPopup();
+            vm.openProcessingPopup(project_tag);
             
             if(vm.formservice.formData.search_type == 'grid'){
 
@@ -81,9 +81,9 @@ app.controller('FormController', ['$scope', 'formService', '$http', 'ngDialog',
             });
         }
 
-        vm.openProcessingPopup = function () {
+        vm.openProcessingPopup = function (project_tag) {
 
-            var template = $scope.base_url + '/projects/AQI/includes/result_popup.html';
+            var template = $scope.base_url + '/projects/'+ project_tag.toUpperCase() +'/includes/result_popup.html';
 
             ngDialog.open({
 
