@@ -23,7 +23,7 @@ class process:
     def start_built(self, formData, selected_model, csv):
         
         process.o_r = {}
-        
+               
         process.split(csv, formData)
 
         process.train_test_split(process.o_r['x'], process.o_r['y'])
@@ -96,23 +96,28 @@ class process:
     def split(csv, formData):
 
         if csv:
+
             process.o_r['df'] = pd.read_csv(csv)
 
             if formData.get('skip_first') and formData.get('skip_first') != 'false':
                 process.o_r['df'].drop(process.o_r['df'].iloc[:,0:1], inplace = True, axis = 1) 
+
+            if formData.get('hasCategorical') and formData.get('hasCategorical') != 'false':
+                process.sort_catgorical_features(formData)
 
             if formData.get('correlation') and formData.get('correlation') != 'false':
                 process.remove_less_corr_features()
 
             if formData.get('top_imp_features') and formData.get('top_imp_features') != 'null':
                 process.pluck_imp_features(formData)
-
+            
             process.o_r['x'] = process.o_r['df'].iloc[:,:-1].values
             process.o_r['y'] = process.o_r['df'].iloc[:,-1].values
 
             df_columns = process.o_r['df'].columns
-            process.o_r['independent_col'] = df_columns[:-1]
-            process.o_r['dependent_col'] = df_columns[-1]
+
+            process.get_dep_and_indep_cols(formData, df_columns)            
+
 
     @staticmethod
     def remove_less_corr_features():
@@ -155,13 +160,121 @@ class process:
         for cols, value in pluck_features:
             process.o_r['df'].drop([cols], inplace = True, axis = 1)
 
-
     @staticmethod
     def train_test_split(X, Y, test_size=0.25, random_state=0):
         process.o_r['train_x'], process.o_r['test_x'], process.o_r['train_y'], process.o_r['test_y'] = train_test_split(X, Y, test_size=test_size, random_state=random_state)
         
+    @staticmethod
+    def sort_catgorical_features(formData):
 
-     
+        categories = formData.get('cat_features').split(',')
+        
+        all_labels = {}
+
+        if formData.get('encoding_technique') == 'count_encoding':
+
+            for category in categories:
+
+                freq = process.o_r['df'][category].value_counts().to_dict()
+
+                process.o_r['df'][category] = process.o_r['df'][category].map(freq)
+                
+                all_labels[category] = freq
+
+        if formData.get('encoding_technique') == 'mean_encoding':
+
+            for category in categories:
+
+                dependent = process.o_r['df'].iloc[:,-1].name
+
+                pair_df = process.o_r['df'][[category, dependent]]
+
+                lables = process.o_r['df'][category].unique()
+
+                freq = {}
+
+                for lable in lables:
+
+                    mean_finder = pair_df.loc[process.o_r['df'][category] == lable, [dependent]]
+
+                    mean = mean_finder.sum()/mean_finder.count()
+
+                    freq[lable] = mean.values[0]
+                
+                process.o_r['df'][category] = process.o_r['df'][category].map(freq)
+                
+                all_labels[category] = freq 
+        
+        if formData.get('encoding_technique') == 'target_encoding':
+
+            for category in categories:
+                    
+                dependent = process.o_r['df'].iloc[:,-1].name
+
+                pair_df = process.o_r['df'][[category, dependent]]
+
+                lables = process.o_r['df'][category].unique()
+
+                freq = {}
+
+                for lable in lables:
+
+                    mean_finder = pair_df.loc[process.o_r['df'][category] == lable, [dependent]]
+
+                    mean = mean_finder.sum()/mean_finder.count()
+
+                    freq[lable] = mean.values[0]
+
+                assending_orders = {k: freq[k] for k in sorted(freq, key=freq.get, reverse=False)}
+                
+                target_guided = {val: key+1 for key, val in enumerate(assending_orders)}
+
+                process.o_r['df'][category] = process.o_r['df'][category].map(target_guided)
+
+                all_labels[category] = target_guided 
+
+        process.o_r['all_categorical_lables'] = all_labels
+                
+    @staticmethod      
+    def get_dep_and_indep_cols(formData, df_columns):
+
+        independent_features = df_columns[:-1]
+
+        categories = formData.get('cat_features').split(',')
+
+        columns = {}
+
+        for ind_feature in independent_features:
+
+            if ind_feature in categories:
+
+                columns['name'] = ind_feature
+                columns['is_categorical'] = True
+                columns['options'] = process.o_r['all_categorical_lables'][ind_feature]
+
+            else:
+
+                columns['name'] = ind_feature
+                columns['is_categorical'] = False
+
+        process.o_r['independent_col'] = columns
+
+        process.o_r['dependent_col'] = df_columns[-1]
+        
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 

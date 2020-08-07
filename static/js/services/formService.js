@@ -17,12 +17,16 @@ app.service('formService', ['$http', '$rootScope',
 
         fs.proccessed_Data = {};
 
+        fs.all_features = [];
+
+        fs.encoding_types = ["mean_encoding", "target_guided_encoding", "count_freqency_encoding"];
+
         //Default data for each input
         fs.default_formData = {};
         fs.default_formData.cv = 10;
         fs.default_formData.scoring = 'neg_mean_squared_error';
         fs.default_formData.search_type = "grid";
-        fs.default_formData.n_iter = 100;
+        fs.default_formData.n_iter = 10;
         fs.default_formData.random_state = 0;
         fs.default_formData.correlation = false;
         fs.default_formData.skip_first = false;
@@ -211,6 +215,64 @@ app.service('formService', ['$http', '$rootScope',
                 }
             );
         }
+
+        fs.getAllFeatures = function(url, hasCategorical){
+
+            if(fs.formData.csvFiles == null){
+
+                alert('Please upload Csv');
+            }
+
+            var features = [];
+
+            var API = fs.base_url + url;
+
+            if(hasCategorical && fs.formData.csvFiles != null){
+
+                var postData = new FormData();
+
+                postData.append('csvFiles', fs.formData.csvFiles);
+            
+                $http({
+                    method : "POST",
+                    url : API,
+                    headers: {
+                                'Content-Type': undefined,
+                            },
+                    data: postData,
+                }).then(
+
+                    function (response) {
+                        
+                        if(response.status == 200){
+
+                            fs.all_features = response.data.columns;
+                        }
+                    }, 
+
+                    function (error) {
+
+                        alert(error.data);
+                    }
+                );                
+            }
+        }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
     }
 ]);

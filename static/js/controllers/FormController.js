@@ -21,7 +21,8 @@ app.controller('FormController', ['$scope', 'formService', '$http', 'ngDialog',
             
             if(vm.formservice.formData.search_type == 'grid'){
 
-                vm.formservice.formData.n_iter = 100;
+                vm.formservice.formData.n_iter = 10;
+                
                 vm.formservice.formData.random_state = 0;
             }
 
