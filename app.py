@@ -4,7 +4,7 @@
 from flask import Flask, render_template, url_for, request, jsonify, abort
 import json, pymongo, joblib, numpy, os, dotenv, boto3
 from algorithms.process import process
-
+import pandas as pd
 
 
 app = Flask(__name__)
@@ -52,6 +52,27 @@ def download(fileName):
         abort(400, str(e))
 
     return 'File downloaded'
+
+
+@app.route('/get/all-feature/index', methods=['POST'])
+def all_features():
+
+    data = {}
+
+    csv = request.files[u'csvFiles']
+
+    try:
+
+        df = pd.read_csv(csv) 
+
+        data['columns'] = list(df.columns) 
+
+    except Exception as e:
+
+        abort(400, str(e))
+
+    return data
+
 
 
 if __name__ == "__main__":
