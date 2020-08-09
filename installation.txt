@@ -11,7 +11,9 @@ $ sudo pip3 install virtualenv
 $ sudo virtualenv venv
 $ source venv/bin/activate
 $ sudo pip3 install -r requirements.txt
-$ python3 app.py
+
+$ cp -r .env.sample .env {{ Update .env ***imp}}
+
 
 // Apache2 configuration
 cd /etc/apache2/sites-available
@@ -33,7 +35,7 @@ $ sudo nano flaskapp.conf
         </directory>
 </VirtualHost>
 
-$ sudo a2ensites flaskapp.conf
+$ sudo a2ensite flaskapp.conf
 $ sudo service apache2 restart
 
 $ sudo tail -5 /var/log/apache2/error.log
@@ -48,6 +50,8 @@ sudo chmod -Rf 777 algorithm/
 ==============================================================================================
 ==============================================================================================
 -----------------------------------------Mongo DB---------------------------------------------
+
+**** if you wanna use db with in your sys(No UI interface, only command shell access)****
 
 $ cd
 

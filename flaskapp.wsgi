@@ -1,4 +1,4 @@
-#deploy_ml => github repo name
+# deploy_ml => github repo name
 
 import os
 import sys

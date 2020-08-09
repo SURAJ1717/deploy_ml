@@ -1,8 +1,8 @@
 var app = angular.module('AIworks', ['ngDialog', 'ngSanitize', 'ui.select']);
 
 app.config(function ($interpolateProvider) {
-  $interpolateProvider.startSymbol('[[');
-  $interpolateProvider.endSymbol(']]');
+    $interpolateProvider.startSymbol('[[');
+    $interpolateProvider.endSymbol(']]');
 });
 
 app.controller('AppController', ['$scope', '$http', 'ngDialog', function ($scope, $http, ngDialog) {
