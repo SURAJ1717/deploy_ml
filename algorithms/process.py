@@ -25,7 +25,7 @@ class process:
         process.o_r = {}
                
         process.split(csv, formData)
-
+                           
         process.train_test_split(process.o_r['x'], process.o_r['y'])
         
         project_tag = formData.get('project_tag')
@@ -40,7 +40,7 @@ class process:
             process.o_r['linear_regressor_output'] = LGR.build(project_tag, algorithm_slug, process.o_r['x'], process.o_r['y'], process.o_r['train_x'], process.o_r['test_x'], process.o_r['train_y'], process.o_r['test_y'], cv=formData['cv'], scoring=formData['scoring'])
             response = json.dumps({
                                 'output': json.loads(process.o_r['linear_regressor_output']),
-                                'independent_col':  list(process.o_r['independent_col']),
+                                'independent_col':  process.o_r['independent_col'],
                                 'dependent_col':  str(process.o_r['dependent_col']),
                             })
 
@@ -49,7 +49,7 @@ class process:
             process.o_r['ridge_regressor_output'] = RR.build(project_tag, algorithm_slug, process.o_r['x'], process.o_r['y'], process.o_r['train_x'], process.o_r['test_x'], process.o_r['train_y'], process.o_r['test_y'], formData['hyper_parameters'], cv=formData['cv'], scoring=formData['scoring'], search_method=formData['search_type'], n_iter=formData['n_iter'])
             response = json.dumps({
                                 'output': json.loads(process.o_r['ridge_regressor_output']),
-                                'independent_col':  list(process.o_r['independent_col']),
+                                'independent_col':  process.o_r['independent_col'],
                                 'dependent_col':  str(process.o_r['dependent_col']),
                             })
 
@@ -58,7 +58,7 @@ class process:
             process.o_r['lasso_regressor_output'] = LSSR.build(project_tag, algorithm_slug, process.o_r['x'], process.o_r['y'], process.o_r['train_x'], process.o_r['test_x'], process.o_r['train_y'], process.o_r['test_y'], formData['hyper_parameters'], cv=formData['cv'], scoring=formData['scoring'], search_method=formData['search_type'], n_iter=formData['n_iter'])
             response = json.dumps({
                                 'output': json.loads(process.o_r['lasso_regressor_output']),
-                                'independent_col':  list(process.o_r['independent_col']),
+                                'independent_col':  process.o_r['independent_col'],
                                 'dependent_col':  str(process.o_r['dependent_col']),
                             })
 
@@ -67,7 +67,7 @@ class process:
             process.o_r['dt_regressor_output'] = DTR.build(project_tag, algorithm_slug, process.o_r['x'], process.o_r['y'], process.o_r['train_x'], process.o_r['test_x'], process.o_r['train_y'], process.o_r['test_y'], formData['hyper_parameters'], cv=formData['cv'], scoring=formData['scoring'], search_method=formData['search_type'], n_iter=formData['n_iter'])
             response = json.dumps({
                                 'output': json.loads(process.o_r['dt_regressor_output']),
-                                'independent_col':  list(process.o_r['independent_col']),
+                                'independent_col':  process.o_r['independent_col'],
                                 'dependent_col':  str(process.o_r['dependent_col']),
                             })
 
@@ -76,7 +76,7 @@ class process:
             process.o_r['rf_regressor_output'] = RFR.build(project_tag, algorithm_slug, process.o_r['x'], process.o_r['y'], process.o_r['train_x'], process.o_r['test_x'], process.o_r['train_y'], process.o_r['test_y'], formData['hyper_parameters'], cv=formData['cv'], scoring=formData['scoring'], search_method=formData['search_type'], n_iter=formData['n_iter'])
             response = json.dumps({
                                 'output': json.loads(process.o_r['rf_regressor_output']),
-                                'independent_col':  list(process.o_r['independent_col']),
+                                'independent_col':  process.o_r['independent_col'],
                                 'dependent_col':  str(process.o_r['dependent_col']),
                             })
 
@@ -85,7 +85,7 @@ class process:
             process.o_r['xgb_regressor_output'] = XGBR.build(project_tag, algorithm_slug, process.o_r['x'], process.o_r['y'], process.o_r['train_x'], process.o_r['test_x'], process.o_r['train_y'], process.o_r['test_y'], formData['hyper_parameters'], cv=formData['cv'], scoring=formData['scoring'], search_method=formData['search_type'], n_iter=formData['n_iter'])
             response = json.dumps({
                                 'output': json.loads(process.o_r['xgb_regressor_output']),
-                                'independent_col':  list(process.o_r['independent_col']),
+                                'independent_col':  process.o_r['independent_col'],
                                 'dependent_col':  str(process.o_r['dependent_col']),
                             })
 
@@ -111,12 +111,11 @@ class process:
             if formData.get('top_imp_features') and formData.get('top_imp_features') != 'null':
                 process.pluck_imp_features(formData)
             
+            process.get_dep_and_indep_cols(formData)            
+
             process.o_r['x'] = process.o_r['df'].iloc[:,:-1].values
             process.o_r['y'] = process.o_r['df'].iloc[:,-1].values
 
-            df_columns = process.o_r['df'].columns
-
-            process.get_dep_and_indep_cols(formData, df_columns)            
 
 
     @staticmethod
@@ -167,7 +166,10 @@ class process:
     @staticmethod
     def sort_catgorical_features(formData):
 
-        categories = formData.get('cat_features').split(',')
+        categories = []
+
+        if formData.get('cat_features') and len(formData.get('cat_features')) > 0:
+            categories = formData.get('cat_features').split(',')
         
         all_labels = {}
 
@@ -236,29 +238,44 @@ class process:
         process.o_r['all_categorical_lables'] = all_labels
                 
     @staticmethod      
-    def get_dep_and_indep_cols(formData, df_columns):
+    def get_dep_and_indep_cols(formData):
+
+        df_columns = process.o_r['df'].columns
 
         independent_features = df_columns[:-1]
 
-        categories = formData.get('cat_features').split(',')
+        categories = []
+
+        if formData.get('hasCategorical') and formData.get('hasCategorical') != 'false':
+            if formData.get('cat_features') and len(formData.get('cat_features')) > 0:
+                categories = formData.get('cat_features').split(',')
 
         columns = {}
 
-        for ind_feature in independent_features:
+        for key, ind_feature in enumerate(independent_features):
 
+            var = {}
+            
             if ind_feature in categories:
 
-                columns['name'] = ind_feature
-                columns['is_categorical'] = True
-                columns['options'] = process.o_r['all_categorical_lables'][ind_feature]
+                var['name'] = ind_feature
+                var['is_categorical'] = True
+                var['options'] = process.o_r['all_categorical_lables'][ind_feature]
+                columns[key] = var
+
+                process.o_r['df'][ind_feature] = process.o_r['df'][ind_feature].astype('float64')
+                process.o_r['df'][ind_feature].fillna((process.o_r['df'][ind_feature].mean()), inplace=True)
 
             else:
 
-                columns['name'] = ind_feature
-                columns['is_categorical'] = False
+                var['name'] = ind_feature
+                var['is_categorical'] = False
+                columns[key] = var
+
+                process.o_r['df'][ind_feature] = process.o_r['df'][ind_feature].astype('float64')
+                process.o_r['df'][ind_feature].fillna((process.o_r['df'][ind_feature].mean()), inplace=True)
 
         process.o_r['independent_col'] = columns
-
         process.o_r['dependent_col'] = df_columns[-1]
         
 

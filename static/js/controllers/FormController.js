@@ -18,14 +18,7 @@ app.controller('FormController', ['$scope', 'formService', '$http', 'ngDialog',
             var API = $scope.base_url + path;
 
             vm.openProcessingPopup(project_tag);
-            
-            if(vm.formservice.formData.search_type == 'grid'){
-
-                vm.formservice.formData.n_iter = 10;
-                
-                vm.formservice.formData.random_state = 0;
-            }
-
+        
             vm.formservice.formData.project_tag = project_tag;
 
             var atleast_one_algo_selected = vm.formservice.formData.algorithms.find(element => element.added == true)
