@@ -80,10 +80,12 @@ class AQI:
 
         input_x = []
 
-        for item in query_result['features']:
-            input_x.append( int( formData.get(item) ) )
+        features = query_result['features'].values()
+        
+        for item in features:
+            input_x.append( formData.get(item['name']) ) 
 
-        final_features = [numpy.array(input_x)]
+        final_features = [numpy.array(input_x, dtype=float)]
 
         filename = 'algorithms/all_fitted_models/'+ query_result['project_tag'] +'/'+ query_result['model_slug'] +'.sav'
         loaded_model = joblib.load(filename)

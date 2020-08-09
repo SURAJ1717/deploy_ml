@@ -3,10 +3,21 @@
 <span ng-if="model_present == 'True'" ng-init="input_features={{data.build_model.features}}; inputData={}">
     <form enctype="multipart/form-data" ng-submit="form.formservice.predictResult('/cpp_predict', inputData)">
         <div class="row">
+            
             <div class="col-6" ng-repeat="item in input_features">
                 <div class="form-group">
-                    <label>[[item.split('_').join(' ')]]</label>
-                    <input type="number" class="form-control" id="[[item]]" ng-model="inputData[item]" required>
+                    <label>[[item.name.split('_').join(' ')]]</label>
+                    
+                    <input ng-if="!item.options" type="number" class="form-control" id="[[item.name]]" ng-model="inputData[item.name]" required>
+                    
+                    <ui-select ng-if="item.options" ng-model="inputData[item.name]" theme="selectize">
+                        <ui-select-match placeholder="Select">
+                            [[$select.selected.key]]
+                        </ui-select-match>
+                        <ui-select-choices repeat="item.value as (key, item) in item.options | filter: $select.search">
+                            [[item.key]]
+                        </ui-select-choices>
+                    </ui-select>
                 </div>
             </div>
             

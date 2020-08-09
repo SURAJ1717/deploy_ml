@@ -36,6 +36,43 @@
             ng-model="form.formservice.formData.scoring">
     </div>
 
+    <div class="form-group col-12 mb-5">
+        <div class="row">
+            <div class="col-4 mt-2">
+                <small><b>Has Categorical features</b></small>
+                <br>
+                <input type="checkbox" class="mx-2" id="catfeature" ng-model="form.formservice.formData.hasCategorical" ng-change="form.formservice.getAllFeatures('/get/all-feature/index', form.formservice.formData.hasCategorical)">
+                <label for="catfeature" style="cursor: pointer;">CSV have Categorical features</label><br>
+            </div>
+
+            <div class="col-4 mt-2" ng-if="form.formservice.all_features.length > 0">
+                <small><b>Select Categorical features</b></small>
+                <br>
+                <ui-select multiple ng-model="form.formservice.formData.cat_features" theme="selectize">
+                    <ui-select-match placeholder="Select Categorical features...">
+                        [[$item]]
+                    </ui-select-match>
+                    <ui-select-choices repeat="feature in form.formservice.all_features | filter: $select.search">
+                        [[feature]]
+                    </ui-select-choices>
+                </ui-select>
+            </div>
+
+            <div class="col-4 mt-2" ng-if="form.formservice.all_features.length > 0">
+                <small><b>Select Encoding Technique</b></small>
+                <br>
+                <ui-select ng-init="form.formservice.formData.encoding_technique='mean_encoding'" ng-model="form.formservice.formData.encoding_technique" theme="selectize">
+                    <ui-select-match placeholder="Select Encoding Technique...">
+                        [[$select.selected]]
+                    </ui-select-match>
+                    <ui-select-choices repeat="encoding in form.formservice.encoding_types | filter: $select.search">
+                        [[encoding]]
+                    </ui-select-choices>
+                </ui-select>
+            </div>
+        </div>
+    </div>
+
     <div class="form-group col-4 mb-5">
         <small><b>Is Time series</b></small>
         <div class="input-group">
@@ -81,14 +118,14 @@
         </select>
     </div>
 
-    <div class="form-group col-6 mb-5" ng-if="form.formservice.formData.search_type == 'rand'">
+    <div class="form-group col-6 mb-5">
         <small><b>RSCV iterations</b></small>
         <input type="number" class="form-control" id="n_iter" placeholder="default 100"
             ng-init="form.formservice.formData.n_iter=form.formservice.default_formData.n_iter"
             ng-model="form.formservice.formData.n_iter">
     </div>
 
-    <div class="form-group col-6 mb-5" ng-if="form.formservice.formData.search_type == 'rand'">
+    <div class="form-group col-6 mb-5">
         <small><b>RSCV Randon State</b></small>
         <input type="number" class="form-control" id="random_state" placeholder="default None"
             ng-init="form.formservice.formData.random_state=form.formservice.default_formData.random_state"
