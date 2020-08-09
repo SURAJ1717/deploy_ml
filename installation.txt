@@ -43,7 +43,7 @@ $ sudo tail -5 /var/log/apache2/error.log
 Note:--
 static\js\services\formService.js ==>> fs.base_url = 'http://'+ window.location.hostname +':5000';
 static\js\app.js ==>> fs.base_url = 'http://'+ window.location.hostname +':5000';
-(change 5000 => 80)
+(change ':5000' => ':80' )
 
 sudo chmod -Rf 777 algorithm/
 
